@@ -1388,37 +1388,54 @@
           row.appendChild(cardsDiv);
 
           const actionsDiv = document.createElement("div");
-          actionsDiv.className = "discipline-actions";
+actionsDiv.className = "discipline-actions";
 
-          const btnYellow = document.createElement("button");
-          btnYellow.type = "button";
-          btnYellow.className = "btn-yellow";
-          btnYellow.textContent = "🟨";
-          btnYellow.title = "Agregar amarilla";
-          btnYellow.addEventListener("click", () => {
-            const c = st.cards[p.id] || {yellow:0, red:0};
-            c.yellow += 1;
-            st.cards[p.id] = c;
-            saveAppState();
-            renderDiscipline();
-          });
+// Botón AMARILLA
+const btnYellow = document.createElement("button");
+btnYellow.type = "button";
+btnYellow.className = "btn-yellow";
+btnYellow.textContent = "🟨";
+btnYellow.title = "Agregar amarilla";
+btnYellow.addEventListener("click", () => {
+  const c = st.cards[p.id] || { yellow: 0, red: 0 };
+  c.yellow += 1;
+  st.cards[p.id] = c;
+  saveAppState();
+  renderDiscipline();
+});
 
-          const btnRed = document.createElement("button");
-          btnRed.type = "button";
-          btnRed.className = "btn-red";
-          btnRed.textContent = "🟥";
-          btnRed.title = "Agregar roja";
-          btnRed.addEventListener("click", () => {
-            const c = st.cards[p.id] || {yellow:0, red:0};
-            c.red += 1;
-            st.cards[p.id] = c;
-            saveAppState();
-            renderDiscipline();
-          });
+// Botón ROJA
+const btnRed = document.createElement("button");
+btnRed.type = "button";
+btnRed.className = "btn-red";
+btnRed.textContent = "🟥";
+btnRed.title = "Agregar roja";
+btnRed.addEventListener("click", () => {
+  const c = st.cards[p.id] || { yellow: 0, red: 0 };
+  c.red += 1;
+  st.cards[p.id] = c;
+  saveAppState();
+  renderDiscipline();
+});
 
-          actionsDiv.appendChild(btnYellow);
-          actionsDiv.appendChild(btnRed);
-          row.appendChild(actionsDiv);
+// Botón BORRAR TARJETAS de este jugador
+const btnClear = document.createElement("button");
+btnClear.type = "button";
+btnClear.className = "btn-secondary";
+btnClear.textContent = "❌";
+btnClear.title = "Borrar tarjetas de este jugador";
+btnClear.addEventListener("click", () => {
+  // Dejarlo sin tarjetas
+  delete st.cards[p.id]; // o: st.cards[p.id] = { yellow: 0, red: 0 };
+  saveAppState();
+  renderDiscipline();
+});
+
+actionsDiv.appendChild(btnYellow);
+actionsDiv.appendChild(btnRed);
+actionsDiv.appendChild(btnClear);
+row.appendChild(actionsDiv);
+
 
           disciplineContainer.appendChild(row);
         });

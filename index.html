@@ -867,7 +867,7 @@
         cards: {},
         payments: {},
         timerMs: 0,
-        timerRunning: false
+        timerRunning: false,
 
 // 🔹 NUEVO: estado de asistencia
     attendanceLocalName: "",
@@ -895,46 +895,88 @@
     }
 
     function loadAppState() {
-      const raw = localStorage.getItem(APP_STORAGE_KEY);
-      if (!raw) {
-        appState.lists.forEach(list => {
-          list.teamAPlayers.push({id: list.nextPlayerId++, role: "GK", name: "", pos: "ARQUERO"});
-          list.teamBPlayers.push({id: list.nextPlayerId++, role: "GK", name: "", pos: "ARQUERO"});
-if (!("attendanceLocalName" in list)) list.attendanceLocalName = "";
-if (!("attendanceRivalName" in list)) list.attendanceRivalName = "";
-if (!("attendanceDate" in list)) list.attendanceDate = "";
-if (!("attendanceNextId" in list)) list.attendanceNextId = 1;
-if (!Array.isArray(list.attendanceGKs)) list.attendanceGKs = [];
-if (!Array.isArray(list.attendanceDefs)) list.attendanceDefs = [];
-if (!Array.isArray(list.attendanceMids)) list.attendanceMids = [];
-if (!Array.isArray(list.attendanceFwds)) list.attendanceFwds = [];
+  const raw = localStorage.getItem(APP_STORAGE_KEY);
 
-        });
-        return;
+  // Si no hay nada en localStorage, inicializamos las 3 listas desde cero
+  if (!raw) {
+    appState.lists.forEach(list => {
+      list.teamAPlayers.push({
+        id: list.nextPlayerId++,
+        role: "GK",
+        name: "",
+        pos: "ARQUERO"
+      });
+      list.teamBPlayers.push({
+        id: list.nextPlayerId++,
+        role: "GK",
+        name: "",
+        pos: "ARQUERO"
+      });
+
+      // 🔹 Inicializar también la parte de asistencia en primera carga
+      list.attendanceLocalName = "";
+      list.attendanceRivalName = "";
+      list.attendanceDate = "";
+      list.attendanceNextId = 1;
+      list.attendanceGKs = [];
+      list.attendanceDefs = [];
+      list.attendanceMids = [];
+      list.attendanceFwds = [];
+    });
+    return;
+  }
+
+  try {
+    const data = JSON.parse(raw);
+    appState.currentListIndex = data.currentListIndex || 0;
+    appState.lists =
+      data.lists || [defaultListState(), defaultListState(), defaultListState()];
+
+    appState.lists.forEach(list => {
+      // --- EXISTENTE ---
+      if (!Array.isArray(list.teamAPlayers)) list.teamAPlayers = [];
+      if (!Array.isArray(list.teamBPlayers)) list.teamBPlayers = [];
+      if (!Array.isArray(list.reserves) || list.reserves.length !== 5) {
+        list.reserves = ["", "", "", "", ""];
       }
-      try {
-        const data = JSON.parse(raw);
-        appState.currentListIndex = data.currentListIndex || 0;
-        appState.lists = data.lists || [defaultListState(), defaultListState(), defaultListState()];
-        appState.lists.forEach(list => {
-          if (!Array.isArray(list.teamAPlayers)) list.teamAPlayers = [];
-          if (!Array.isArray(list.teamBPlayers)) list.teamBPlayers = [];
-          if (!Array.isArray(list.reserves) || list.reserves.length !== 5) list.reserves = ["","","","",""];
-          if (!list.nextPlayerId) list.nextPlayerId = 1;
-          if (!list.teamAPlayers.some(p=>p.role==="GK")) {
-            list.teamAPlayers.unshift({id:list.nextPlayerId++, role:"GK", name:"", pos:"ARQUERO"});
-          }
-          if (!list.teamBPlayers.some(p=>p.role==="GK")) {
-            list.teamBPlayers.unshift({id:list.nextPlayerId++, role:"GK", name:"", pos:"ARQUERO"});
-          }
-          if (!list.cards) list.cards = {};
-          if (!list.payments) list.payments = {};
-          if (!list.goals) list.goals = {};
+      if (!list.nextPlayerId) list.nextPlayerId = 1;
+
+      if (!list.teamAPlayers.some(p => p.role === "GK")) {
+        list.teamAPlayers.unshift({
+          id: list.nextPlayerId++,
+          role: "GK",
+          name: "",
+          pos: "ARQUERO"
         });
-      } catch(e) {
-        console.error("Error loading app state:", e);
       }
-    }
+      if (!list.teamBPlayers.some(p => p.role === "GK")) {
+        list.teamBPlayers.unshift({
+          id: list.nextPlayerId++,
+          role: "GK",
+          name: "",
+          pos: "ARQUERO"
+        });
+      }
+
+      if (!list.cards) list.cards = {};
+      if (!list.payments) list.payments = {};
+      if (!list.goals) list.goals = {};
+
+      // --- NUEVO: asegurar campos de asistencia también cuando sí hay data ---
+      if (!("attendanceLocalName" in list)) list.attendanceLocalName = "";
+      if (!("attendanceRivalName" in list)) list.attendanceRivalName = "";
+      if (!("attendanceDate" in list)) list.attendanceDate = "";
+      if (!("attendanceNextId" in list)) list.attendanceNextId = 1;
+      if (!Array.isArray(list.attendanceGKs)) list.attendanceGKs = [];
+      if (!Array.isArray(list.attendanceDefs)) list.attendanceDefs = [];
+      if (!Array.isArray(list.attendanceMids)) list.attendanceMids = [];
+      if (!Array.isArray(list.attendanceFwds)) list.attendanceFwds = [];
+    });
+  } catch (e) {
+    console.error("Error loading app state:", e);
+  }
+}
+
 
     function decorated(text) {
       return text;

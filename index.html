@@ -3,13 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <title>Calidosos FC - App de Partido</title>
-<!-- iOS: abrir como app a pantalla completa -->
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="i-Referee">
-
-<!-- Icono cuando se guarda en pantalla de inicio (ajusta el nombre según tu archivo) -->
-<link rel="apple-touch-icon" href="calidosos-logo.png">
+  <!-- iOS: abrir como app a pantalla completa -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="i-Referee">
+  <!-- Icono cuando se guarda en pantalla de inicio -->
+  <link rel="apple-touch-icon" href="calidosos-logo.png">
 
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
@@ -408,6 +407,40 @@
       padding: 3px 6px;
     }
 
+    /* 🔢 MARCADOR */
+    .scoreboard {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin: 6px 0 10px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #020617;
+      border: 1px solid #1f2937;
+      font-size: 0.85rem;
+    }
+
+    .score-team-name {
+      flex: 1;
+      text-align: center;
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .score-value {
+      flex: 0 0 auto;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #fbbf24;
+    }
+
+    .score-value span {
+      display: inline-block;
+      min-width: 18px;
+      text-align: center;
+    }
+
     .goals-discipline-toggle {
       display: flex;
       gap: 4px;
@@ -502,80 +535,80 @@
     <div class="card">
       <!-- Tabs -->
       <div class="tabs">
-  <button class="tab-button active" data-tab="asistencia">Asistencia</button>
-  <button class="tab-button" data-tab="equipos">Equipos</button>
-  <button class="tab-button" data-tab="goles">Goles / Disciplina</button>
-  <button class="tab-button" data-tab="pagos">Pagos</button>
-</div>
-
-<!-- TAB 0: ASISTENCIA / CREAR EQUIPOS -->
-<div id="tab-asistencia" class="tab-content active">
-  <div class="team-block">
-    <div class="team-title">Asistencia y creación automática de equipos</div>
-
-    <!-- Encabezado: equipos y fecha -->
-    <div class="row">
-      <div>
-        <label for="attendanceLocalName">Equipo local</label>
-        <input
-          id="attendanceLocalName"
-          type="text"
-          placeholder="Calidosos F.C."
-        />
+        <button class="tab-button active" data-tab="asistencia">Asistencia</button>
+        <button class="tab-button" data-tab="equipos">Equipos</button>
+        <button class="tab-button" data-tab="goles">Goles / Disciplina</button>
+        <button class="tab-button" data-tab="pagos">Pagos</button>
       </div>
-      <div style="flex:0 0 auto; align-self:center; text-align:center; font-weight:700;">
-        Vs
+
+      <!-- TAB 0: ASISTENCIA / CREAR EQUIPOS -->
+      <div id="tab-asistencia" class="tab-content active">
+        <div class="team-block">
+          <div class="team-title">Asistencia y creación automática de equipos</div>
+
+          <!-- Encabezado: equipos y fecha -->
+          <div class="row">
+            <div>
+              <label for="attendanceLocalName">Equipo local</label>
+              <input
+                id="attendanceLocalName"
+                type="text"
+                placeholder="Calidosos F.C."
+              />
+            </div>
+            <div style="flex:0 0 auto; align-self:center; text-align:center; font-weight:700;">
+              Vs
+            </div>
+            <div>
+              <label for="attendanceRivalName">Equipo rival</label>
+              <input
+                id="attendanceRivalName"
+                type="text"
+                placeholder="Rival F.C."
+              />
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label for="attendanceDate">Lista de asistencia a partido del día:</label>
+              <input id="attendanceDate" type="date" />
+            </div>
+          </div>
+
+          <p class="small">
+            Registra los jugadores por posición y luego presiona <strong>CREAR EQUIPOS</strong> para
+            distribuirlos automáticamente en las listas de Equipo A y B.
+          </p>
+        </div>
+
+        <div class="team-block">
+          <div class="position-title">PORTERÍA 🧤 (máx. 2)</div>
+          <div id="attendanceGKContainer"></div>
+          <button class="btn btn-secondary btn-block" id="btnAddGK">➕ Agregar portero</button>
+
+          <div class="position-title" style="margin-top:8px;">DEFENSA 🛡️ (máx. 6)</div>
+          <div id="attendanceDefContainer"></div>
+          <button class="btn btn-secondary btn-block" id="btnAddDef">➕ Agregar defensa</button>
+
+          <div class="position-title" style="margin-top:8px;">MEDIO CAMPO ⚽ (máx. 8)</div>
+          <div id="attendanceMidContainer"></div>
+          <button class="btn btn-secondary btn-block" id="btnAddMid">➕ Agregar medio</button>
+
+          <div class="position-title" style="margin-top:8px;">DELANTERA 🎯 (máx. 4)</div>
+          <div id="attendanceFwdContainer"></div>
+          <button class="btn btn-secondary btn-block" id="btnAddFwd">➕ Agregar delantero</button>
+
+          <p class="small" style="margin-top:8px;">
+            • <strong>Modo 10 jugadores:</strong> 1 portero, 3 defensas, 4 medios y 2 delanteros → todos al Equipo A.<br/>
+            • <strong>Modo 20 jugadores:</strong> 2 porteros, 6 defensas, 8 medios y 4 delanteros → se reparten en A y B.
+          </p>
+
+          <button class="btn btn-primary btn-block" id="btnCreateTeams">
+            ⚽ CREAR EQUIPOS
+          </button>
+        </div>
       </div>
-      <div>
-        <label for="attendanceRivalName">Equipo rival</label>
-        <input
-          id="attendanceRivalName"
-          type="text"
-          placeholder="Rival F.C."
-        />
-      </div>
-    </div>
-
-    <div class="row">
-      <div>
-        <label for="attendanceDate">Lista de asistencia a partido del día:</label>
-        <input id="attendanceDate" type="date" />
-      </div>
-    </div>
-
-    <p class="small">
-      Registra los jugadores por posición y luego presiona <strong>CREAR EQUIPOS</strong> para
-      distribuirlos automáticamente en las listas de Equipo A y B.
-    </p>
-  </div>
-
-  <div class="team-block">
-    <div class="position-title">PORTERÍA 🧤 (máx. 2)</div>
-    <div id="attendanceGKContainer"></div>
-    <button class="btn btn-secondary btn-block" id="btnAddGK">➕ Agregar portero</button>
-
-    <div class="position-title" style="margin-top:8px;">DEFENSA 🛡️ (máx. 6)</div>
-    <div id="attendanceDefContainer"></div>
-    <button class="btn btn-secondary btn-block" id="btnAddDef">➕ Agregar defensa</button>
-
-    <div class="position-title" style="margin-top:8px;">MEDIO CAMPO ⚽ (máx. 8)</div>
-    <div id="attendanceMidContainer"></div>
-    <button class="btn btn-secondary btn-block" id="btnAddMid">➕ Agregar medio</button>
-
-    <div class="position-title" style="margin-top:8px;">DELANTERA 🎯 (máx. 4)</div>
-    <div id="attendanceFwdContainer"></div>
-    <button class="btn btn-secondary btn-block" id="btnAddFwd">➕ Agregar delantero</button>
-
-    <p class="small" style="margin-top:8px;">
-      • <strong>Modo 10 jugadores:</strong> 1 portero, 3 defensas, 4 medios y 2 delanteros → todos al Equipo A.<br/>
-      • <strong>Modo 20 jugadores:</strong> 2 porteros, 6 defensas, 8 medios y 4 delanteros → se reparten en A y B.
-    </p>
-
-    <button class="btn btn-primary btn-block" id="btnCreateTeams">
-      ⚽ CREAR EQUIPOS
-    </button>
-  </div>
-</div>
 
       <!-- TAB 1: EQUIPOS -->
       <div id="tab-equipos" class="tab-content">
@@ -736,6 +769,17 @@
           <div class="timer-display" id="timerDisplay">00:00:00</div>
         </div>
 
+        <!-- 🔢 MARCADOR EN VIVO -->
+        <div class="scoreboard">
+          <div class="score-team-name" id="scoreTeamAName">Equipo A</div>
+          <div class="score-value">
+            <span id="scoreA">0</span>
+            <span>-</span>
+            <span id="scoreB">0</span>
+          </div>
+          <div class="score-team-name" id="scoreTeamBName">Equipo B</div>
+        </div>
+
         <div class="goals-discipline-toggle">
           <button class="subtab-button active" data-subtab="goles">Goles</button>
           <button class="subtab-button" data-subtab="disciplina">Disciplina</button>
@@ -869,15 +913,15 @@
         timerMs: 0,
         timerRunning: false,
 
-// 🔹 NUEVO: estado de asistencia
-    attendanceLocalName: "",
-    attendanceRivalName: "",
-    attendanceDate: "",
-    attendanceNextId: 1,
-    attendanceGKs: [],
-    attendanceDefs: [],
-    attendanceMids: [],
-    attendanceFwds: []
+        // 🔹 Asistencia
+        attendanceLocalName: "",
+        attendanceRivalName: "",
+        attendanceDate: "",
+        attendanceNextId: 1,
+        attendanceGKs: [],
+        attendanceDefs: [],
+        attendanceMids: [],
+        attendanceFwds: []
       };
     }
 
@@ -895,88 +939,83 @@
     }
 
     function loadAppState() {
-  const raw = localStorage.getItem(APP_STORAGE_KEY);
+      const raw = localStorage.getItem(APP_STORAGE_KEY);
 
-  // Si no hay nada en localStorage, inicializamos las 3 listas desde cero
-  if (!raw) {
-    appState.lists.forEach(list => {
-      list.teamAPlayers.push({
-        id: list.nextPlayerId++,
-        role: "GK",
-        name: "",
-        pos: "ARQUERO"
-      });
-      list.teamBPlayers.push({
-        id: list.nextPlayerId++,
-        role: "GK",
-        name: "",
-        pos: "ARQUERO"
-      });
+      if (!raw) {
+        appState.lists.forEach(list => {
+          list.teamAPlayers.push({
+            id: list.nextPlayerId++,
+            role: "GK",
+            name: "",
+            pos: "ARQUERO"
+          });
+          list.teamBPlayers.push({
+            id: list.nextPlayerId++,
+            role: "GK",
+            name: "",
+            pos: "ARQUERO"
+          });
 
-      // 🔹 Inicializar también la parte de asistencia en primera carga
-      list.attendanceLocalName = "";
-      list.attendanceRivalName = "";
-      list.attendanceDate = "";
-      list.attendanceNextId = 1;
-      list.attendanceGKs = [];
-      list.attendanceDefs = [];
-      list.attendanceMids = [];
-      list.attendanceFwds = [];
-    });
-    return;
-  }
-
-  try {
-    const data = JSON.parse(raw);
-    appState.currentListIndex = data.currentListIndex || 0;
-    appState.lists =
-      data.lists || [defaultListState(), defaultListState(), defaultListState()];
-
-    appState.lists.forEach(list => {
-      // --- EXISTENTE ---
-      if (!Array.isArray(list.teamAPlayers)) list.teamAPlayers = [];
-      if (!Array.isArray(list.teamBPlayers)) list.teamBPlayers = [];
-      if (!Array.isArray(list.reserves) || list.reserves.length !== 5) {
-        list.reserves = ["", "", "", "", ""];
-      }
-      if (!list.nextPlayerId) list.nextPlayerId = 1;
-
-      if (!list.teamAPlayers.some(p => p.role === "GK")) {
-        list.teamAPlayers.unshift({
-          id: list.nextPlayerId++,
-          role: "GK",
-          name: "",
-          pos: "ARQUERO"
+          list.attendanceLocalName = "";
+          list.attendanceRivalName = "";
+          list.attendanceDate = "";
+          list.attendanceNextId = 1;
+          list.attendanceGKs = [];
+          list.attendanceDefs = [];
+          list.attendanceMids = [];
+          list.attendanceFwds = [];
         });
+        return;
       }
-      if (!list.teamBPlayers.some(p => p.role === "GK")) {
-        list.teamBPlayers.unshift({
-          id: list.nextPlayerId++,
-          role: "GK",
-          name: "",
-          pos: "ARQUERO"
+
+      try {
+        const data = JSON.parse(raw);
+        appState.currentListIndex = data.currentListIndex || 0;
+        appState.lists =
+          data.lists || [defaultListState(), defaultListState(), defaultListState()];
+
+        appState.lists.forEach(list => {
+          if (!Array.isArray(list.teamAPlayers)) list.teamAPlayers = [];
+          if (!Array.isArray(list.teamBPlayers)) list.teamBPlayers = [];
+          if (!Array.isArray(list.reserves) || list.reserves.length !== 5) {
+            list.reserves = ["", "", "", "", ""];
+          }
+          if (!list.nextPlayerId) list.nextPlayerId = 1;
+
+          if (!list.teamAPlayers.some(p => p.role === "GK")) {
+            list.teamAPlayers.unshift({
+              id: list.nextPlayerId++,
+              role: "GK",
+              name: "",
+              pos: "ARQUERO"
+            });
+          }
+          if (!list.teamBPlayers.some(p => p.role === "GK")) {
+            list.teamBPlayers.unshift({
+              id: list.nextPlayerId++,
+              role: "GK",
+              name: "",
+              pos: "ARQUERO"
+            });
+          }
+
+          if (!list.cards) list.cards = {};
+          if (!list.payments) list.payments = {};
+          if (!list.goals) list.goals = {};
+
+          if (!("attendanceLocalName" in list)) list.attendanceLocalName = "";
+          if (!("attendanceRivalName" in list)) list.attendanceRivalName = "";
+          if (!("attendanceDate" in list)) list.attendanceDate = "";
+          if (!("attendanceNextId" in list)) list.attendanceNextId = 1;
+          if (!Array.isArray(list.attendanceGKs)) list.attendanceGKs = [];
+          if (!Array.isArray(list.attendanceDefs)) list.attendanceDefs = [];
+          if (!Array.isArray(list.attendanceMids)) list.attendanceMids = [];
+          if (!Array.isArray(list.attendanceFwds)) list.attendanceFwds = [];
         });
+      } catch (e) {
+        console.error("Error loading app state:", e);
       }
-
-      if (!list.cards) list.cards = {};
-      if (!list.payments) list.payments = {};
-      if (!list.goals) list.goals = {};
-
-      // --- NUEVO: asegurar campos de asistencia también cuando sí hay data ---
-      if (!("attendanceLocalName" in list)) list.attendanceLocalName = "";
-      if (!("attendanceRivalName" in list)) list.attendanceRivalName = "";
-      if (!("attendanceDate" in list)) list.attendanceDate = "";
-      if (!("attendanceNextId" in list)) list.attendanceNextId = 1;
-      if (!Array.isArray(list.attendanceGKs)) list.attendanceGKs = [];
-      if (!Array.isArray(list.attendanceDefs)) list.attendanceDefs = [];
-      if (!Array.isArray(list.attendanceMids)) list.attendanceMids = [];
-      if (!Array.isArray(list.attendanceFwds)) list.attendanceFwds = [];
-    });
-  } catch (e) {
-    console.error("Error loading app state:", e);
-  }
-}
-
+    }
 
     function decorated(text) {
       return text;
@@ -1014,20 +1053,21 @@
       const teamBJerseySelect = document.getElementById("teamBJersey");
       const teamATitle = document.getElementById("teamATitle");
       const teamBTitle = document.getElementById("teamBTitle");
-const attendanceLocalNameInput = document.getElementById("attendanceLocalName");
-const attendanceRivalNameInput = document.getElementById("attendanceRivalName");
-const attendanceDateInput = document.getElementById("attendanceDate");
 
-const attendanceGKContainer = document.getElementById("attendanceGKContainer");
-const attendanceDefContainer = document.getElementById("attendanceDefContainer");
-const attendanceMidContainer = document.getElementById("attendanceMidContainer");
-const attendanceFwdContainer = document.getElementById("attendanceFwdContainer");
+      const attendanceLocalNameInput = document.getElementById("attendanceLocalName");
+      const attendanceRivalNameInput = document.getElementById("attendanceRivalName");
+      const attendanceDateInput = document.getElementById("attendanceDate");
 
-const btnAddGK = document.getElementById("btnAddGK");
-const btnAddDef = document.getElementById("btnAddDef");
-const btnAddMid = document.getElementById("btnAddMid");
-const btnAddFwd = document.getElementById("btnAddFwd");
-const btnCreateTeams = document.getElementById("btnCreateTeams");
+      const attendanceGKContainer = document.getElementById("attendanceGKContainer");
+      const attendanceDefContainer = document.getElementById("attendanceDefContainer");
+      const attendanceMidContainer = document.getElementById("attendanceMidContainer");
+      const attendanceFwdContainer = document.getElementById("attendanceFwdContainer");
+
+      const btnAddGK = document.getElementById("btnAddGK");
+      const btnAddDef = document.getElementById("btnAddDef");
+      const btnAddMid = document.getElementById("btnAddMid");
+      const btnAddFwd = document.getElementById("btnAddFwd");
+      const btnCreateTeams = document.getElementById("btnCreateTeams");
 
       const teamAGKContainer = document.getElementById("teamAGKContainer");
       const teamADefContainer = document.getElementById("teamADefContainer");
@@ -1073,8 +1113,13 @@ const btnCreateTeams = document.getElementById("btnCreateTeams");
       const disciplineContainer = document.getElementById("disciplineContainer");
       const btnExportDisciplina = document.getElementById("btnExportDisciplina");
 
-
       const goalSound = document.getElementById("goalSound");
+
+      // Marcador
+      const scoreTeamANameEl = document.getElementById("scoreTeamAName");
+      const scoreTeamBNameEl = document.getElementById("scoreTeamBName");
+      const scoreAEl = document.getElementById("scoreA");
+      const scoreBEl = document.getElementById("scoreB");
 
       // EMOJIS
       document.querySelectorAll(".emoji-toggle").forEach(span => {
@@ -1202,16 +1247,45 @@ const btnCreateTeams = document.getElementById("btnCreateTeams");
         container.appendChild(row);
       }
 
+      function updateScoreboard() {
+        const st = currentState();
+        const players = allPlayersFlat();
+        let goalsA = 0;
+        let goalsB = 0;
+
+        Object.entries(st.goals || {}).forEach(([id, minutes]) => {
+          const p = players.find(pl => pl.id === parseInt(id,10));
+          if (!p || !Array.isArray(minutes)) return;
+          const g = minutes.length;
+          if (p.team === "A") goalsA += g;
+          else if (p.team === "B") goalsB += g;
+        });
+
+        scoreAEl.textContent = goalsA;
+        scoreBEl.textContent = goalsB;
+
+        const nameA = st.teamAName || "Equipo A";
+        const nameB = st.teamBName || "Equipo B";
+        scoreTeamANameEl.textContent = nameA;
+        scoreTeamBNameEl.textContent = nameB;
+      }
+
       function updateTeamTitles() {
         const st = currentState();
         const nameA = st.teamAName || "Equipo A";
         const nameB = st.teamBName || "Equipo B";
         teamATitle.innerHTML = `<span>${st.teamAJersey}</span><span>${decorated(nameA)}</span><span>${st.teamAJersey}</span>`;
         teamBTitle.innerHTML = `<span>${st.teamBJersey}</span><span>${decorated(nameB)}</span><span>${st.teamBJersey}</span>`;
+        updateScoreboard();
       }
 
       function renderTeamsUI() {
         const st = currentState();
+
+        // 🔐 Asegurar siempre un portero por equipo (corrige línea muerta del B en modo 10)
+        ensureGK("A");
+        ensureGK("B");
+
         teamAGKContainer.innerHTML = "";
         teamADefContainer.innerHTML = "";
         teamAMidContainer.innerHTML = "";
@@ -1254,51 +1328,51 @@ const btnCreateTeams = document.getElementById("btnCreateTeams");
         updateTeamTitles();
       }
 
-function renderAttendance() {
-  const st = currentState();
+      function renderAttendance() {
+        const st = currentState();
 
-  function renderSection(key, container) {
-    container.innerHTML = "";
-    const list = st[key] || [];
+        function renderSection(key, container) {
+          container.innerHTML = "";
+          const list = st[key] || [];
 
-    list.forEach(player => {
-      const row = document.createElement("div");
-      row.className = "player-row";
+          list.forEach(player => {
+            const row = document.createElement("div");
+            row.className = "player-row";
 
-      const input = document.createElement("input");
-      input.type = "text";
-      input.placeholder = "Nombre del jugador";
-      input.value = player.name || "";
-      input.style.flex = "1";
-      input.addEventListener("input", () => {
-        player.name = input.value;
-        saveAppState();
-      });
+            const input = document.createElement("input");
+            input.type = "text";
+            input.placeholder = "Nombre del jugador";
+            input.value = player.name || "";
+            input.style.flex = "1";
+            input.addEventListener("input", () => {
+              player.name = input.value;
+              saveAppState();
+            });
 
-      const delBtn = document.createElement("button");
-      delBtn.type = "button";
-      delBtn.textContent = "✖";
-      delBtn.className = "btn btn-danger";
-      delBtn.style.padding = "2px 6px";
-      delBtn.style.fontSize = "0.7rem";
-      delBtn.addEventListener("click", () => {
-        const arr = st[key] || [];
-        st[key] = arr.filter(p => p.id !== player.id);
-        saveAppState();
-        renderAttendance();
-      });
+            const delBtn = document.createElement("button");
+            delBtn.type = "button";
+            delBtn.textContent = "✖";
+            delBtn.className = "btn btn-danger";
+            delBtn.style.padding = "2px 6px";
+            delBtn.style.fontSize = "0.7rem";
+            delBtn.addEventListener("click", () => {
+              const arr = st[key] || [];
+              st[key] = arr.filter(p => p.id !== player.id);
+              saveAppState();
+              renderAttendance();
+            });
 
-      row.appendChild(input);
-      row.appendChild(delBtn);
-      container.appendChild(row);
-    });
-  }
+            row.appendChild(input);
+            row.appendChild(delBtn);
+            container.appendChild(row);
+          });
+        }
 
-  renderSection("attendanceGKs", attendanceGKContainer);
-  renderSection("attendanceDefs", attendanceDefContainer);
-  renderSection("attendanceMids", attendanceMidContainer);
-  renderSection("attendanceFwds", attendanceFwdContainer);
-}
+        renderSection("attendanceGKs", attendanceGKContainer);
+        renderSection("attendanceDefs", attendanceDefContainer);
+        renderSection("attendanceMids", attendanceMidContainer);
+        renderSection("attendanceFwds", attendanceFwdContainer);
+      }
 
       function hydrateUIFromState() {
         const st = currentState();
@@ -1308,11 +1382,11 @@ function renderAttendance() {
         teamBNameInput.value = st.teamBName || "";
         teamAJerseySelect.value = st.teamAJersey || "🟥";
         teamBJerseySelect.value = st.teamBJersey || "🟦";
-attendanceLocalNameInput.value = st.attendanceLocalName || "";
-attendanceRivalNameInput.value = st.attendanceRivalName || "";
-attendanceDateInput.value = st.attendanceDate || "";
-renderAttendance();
 
+        attendanceLocalNameInput.value = st.attendanceLocalName || "";
+        attendanceRivalNameInput.value = st.attendanceRivalName || "";
+        attendanceDateInput.value = st.attendanceDate || "";
+        renderAttendance();
 
         renderTeamsUI();
         rebuildGoalPlayerOptions();
@@ -1321,6 +1395,7 @@ renderAttendance();
         renderDiscipline();
         timerDisplay.textContent = formatTimer(st.timerMs || 0);
         updateTeamTitles();
+        updateScoreboard();
       }
 
       // EVENTOS BÁSICOS
@@ -1351,169 +1426,176 @@ renderAttendance();
         buildPaymentsTable();
         renderDiscipline();
       });
-attendanceLocalNameInput.addEventListener("input", () => {
-  const st = currentState();
-  st.attendanceLocalName = attendanceLocalNameInput.value;
-  saveAppState();
-});
 
-attendanceRivalNameInput.addEventListener("input", () => {
-  const st = currentState();
-  st.attendanceRivalName = attendanceRivalNameInput.value;
-  saveAppState();
-});
+      attendanceLocalNameInput.addEventListener("input", () => {
+        const st = currentState();
+        st.attendanceLocalName = attendanceLocalNameInput.value;
+        saveAppState();
+      });
 
-attendanceDateInput.addEventListener("change", () => {
-  const st = currentState();
-  st.attendanceDate = attendanceDateInput.value;
-  saveAppState();
-});
-function addAttendancePlayer(key, max) {
-  const st = currentState();
-  const list = st[key] || [];
-  if (list.length >= max) {
-    alert("Máximo " + max + " jugadores en esta posición.");
-    return;
-  }
-  list.push({ id: st.attendanceNextId++, name: "" });
-  st[key] = list;
-  saveAppState();
-  renderAttendance();
-}
+      attendanceRivalNameInput.addEventListener("input", () => {
+        const st = currentState();
+        st.attendanceRivalName = attendanceRivalNameInput.value;
+        saveAppState();
+      });
 
-btnAddGK.addEventListener("click", () => addAttendancePlayer("attendanceGKs", 2));
-btnAddDef.addEventListener("click", () => addAttendancePlayer("attendanceDefs", 6));
-btnAddMid.addEventListener("click", () => addAttendancePlayer("attendanceMids", 8));
-btnAddFwd.addEventListener("click", () => addAttendancePlayer("attendanceFwds", 4));
+      attendanceDateInput.addEventListener("change", () => {
+        const st = currentState();
+        st.attendanceDate = attendanceDateInput.value;
+        saveAppState();
+      });
 
-function shuffleArray(arr) {
-  const copy = [...arr];
-  for (let i = copy.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [copy[i], copy[j]] = [copy[j], copy[i]];
-  }
-  return copy;
-}
+      function addAttendancePlayer(key, max) {
+        const st = currentState();
+        const list = st[key] || [];
+        if (list.length >= max) {
+          alert("Máximo " + max + " jugadores en esta posición.");
+          return;
+        }
+        list.push({ id: st.attendanceNextId++, name: "" });
+        st[key] = list;
+        saveAppState();
+        renderAttendance();
+      }
 
-btnCreateTeams.addEventListener("click", () => {
-  const st = currentState();
+      btnAddGK.addEventListener("click", () => addAttendancePlayer("attendanceGKs", 2));
+      btnAddDef.addEventListener("click", () => addAttendancePlayer("attendanceDefs", 6));
+      btnAddMid.addEventListener("click", () => addAttendancePlayer("attendanceMids", 8));
+      btnAddFwd.addEventListener("click", () => addAttendancePlayer("attendanceFwds", 4));
 
-  const gk = (st.attendanceGKs || []).filter(p => (p.name || "").trim() !== "");
-  const df = (st.attendanceDefs || []).filter(p => (p.name || "").trim() !== "");
-  const mf = (st.attendanceMids || []).filter(p => (p.name || "").trim() !== "");
-  const fw = (st.attendanceFwds || []).filter(p => (p.name || "").trim() !== "");
+      function shuffleArray(arr) {
+        const copy = [...arr];
+        for (let i = copy.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy;
+      }
 
-  const total = gk.length + df.length + mf.length + fw.length;
+      btnCreateTeams.addEventListener("click", () => {
+        const st = currentState();
 
-  const is10 =
-    total === 10 &&
-    gk.length === 1 &&
-    df.length === 3 &&
-    mf.length === 4 &&
-    fw.length === 2;
+        const gk = (st.attendanceGKs || []).filter(p => (p.name || "").trim() !== "");
+        const df = (st.attendanceDefs || []).filter(p => (p.name || "").trim() !== "");
+        const mf = (st.attendanceMids || []).filter(p => (p.name || "").trim() !== "");
+        const fw = (st.attendanceFwds || []).filter(p => (p.name || "").trim() !== "");
 
-  const is20 =
-    total === 20 &&
-    gk.length === 2 &&
-    df.length === 6 &&
-    mf.length === 8 &&
-    fw.length === 4;
+        const total = gk.length + df.length + mf.length + fw.length;
 
-  if (!is10 && !is20) {
-    alert(
-      "Para crear equipos automáticos debes registrar:\n\n" +
-      "• 1 portero, 3 defensas, 4 medios y 2 delanteros (10 jugadores)\n" +
-      "• o 2 porteros, 6 defensas, 8 medios y 4 delanteros (20 jugadores)."
-    );
-    return;
-  }
+        const is10 =
+          total === 10 &&
+          gk.length === 1 &&
+          df.length === 3 &&
+          mf.length === 4 &&
+          fw.length === 2;
 
-  // Opcional: limpiar goles, pagos y tarjetas porque son equipos nuevos
-  st.goals = {};
-  st.cards = {};
-  st.payments = {};
+        const is20 =
+          total === 20 &&
+          gk.length === 2 &&
+          df.length === 6 &&
+          mf.length === 8 &&
+          fw.length === 4;
 
-  function mapAttendance(list, role, posDefault) {
-    return list.map(p => ({
-      id: st.nextPlayerId++,
-      role,
-      name: p.name,
-      pos: posDefault
-    }));
-  }
+        if (!is10 && !is20) {
+          alert(
+            "Para crear equipos automáticos debes registrar:\n\n" +
+            "• 1 portero, 3 defensas, 4 medios y 2 delanteros (10 jugadores)\n" +
+            "• o 2 porteros, 6 defensas, 8 medios y 4 delanteros (20 jugadores)."
+          );
+          return;
+        }
 
-  // Si hay nombre en Asistencia, sincronizar con Equipo A/B
-  if ((st.attendanceLocalName || "").trim() !== "") {
-    st.teamAName = st.attendanceLocalName.trim();
-  }
-  if ((st.attendanceRivalName || "").trim() !== "") {
-    st.teamBName = st.attendanceRivalName.trim();
-  }
+        // limpiar goles, pagos y tarjetas porque son equipos nuevos
+        st.goals = {};
+        st.cards = {};
+        st.payments = {};
 
-  if (is10) {
-    // Todo para Equipo A
-    const teamA = [
-      ...mapAttendance(gk, "GK", "ARQUERO"),
-      ...mapAttendance(df, "DEF", "DEFENSA"),
-      ...mapAttendance(mf, "MID", "VOLANTE"),
-      ...mapAttendance(fw, "FWD", "DELANTERO")
-    ];
-    st.teamAPlayers = teamA;
-    st.teamBPlayers = [];
-    saveAppState();
-    renderTeamsUI();
-    rebuildGoalPlayerOptions();
-    buildPaymentsTable();
-    renderDiscipline();
-    updateTeamTitles();
+        function mapAttendance(list, role, posDefault) {
+          return list.map(p => ({
+            id: st.nextPlayerId++,
+            role,
+            name: p.name,
+            pos: posDefault
+          }));
+        }
 
-    try {
-      goalSound.currentTime = 0;
-      goalSound.play().catch(()=>{});
-    } catch(e) {}
-    alert("⚽ EQUIPO A CREADO");
-    return;
-  }
+        // sincronizar nombres si existen
+        if ((st.attendanceLocalName || "").trim() !== "") {
+          st.teamAName = st.attendanceLocalName.trim();
+        }
+        if ((st.attendanceRivalName || "").trim() !== "") {
+          st.teamBName = st.attendanceRivalName.trim();
+        }
 
-  // is20 → repartir en A y B
-  const gkS = shuffleArray(gk);
-  const dfS = shuffleArray(df);
-  const mfS = shuffleArray(mf);
-  const fwS = shuffleArray(fw);
+        if (is10) {
+          const teamA = [
+            ...mapAttendance(gk, "GK", "ARQUERO"),
+            ...mapAttendance(df, "DEF", "DEFENSA"),
+            ...mapAttendance(mf, "MID", "VOLANTE"),
+            ...mapAttendance(fw, "FWD", "DELANTERO")
+          ];
 
-  const teamA = [];
-  const teamB = [];
+          // 10 jugadores al Equipo A
+          st.teamAPlayers = teamA;
 
-  teamA.push(...mapAttendance([gkS[0]], "GK", "ARQUERO"));
-  teamB.push(...mapAttendance([gkS[1]], "GK", "ARQUERO"));
+          // B vacío pero se le crea portero editable
+          st.teamBPlayers = [];
+          ensureGK("B");
 
-  teamA.push(...mapAttendance(dfS.slice(0,3), "DEF", "DEFENSA"));
-  teamB.push(...mapAttendance(dfS.slice(3,6), "DEF", "DEFENSA"));
+          saveAppState();
+          renderTeamsUI();
+          rebuildGoalPlayerOptions();
+          buildPaymentsTable();
+          renderDiscipline();
+          updateTeamTitles();
 
-  teamA.push(...mapAttendance(mfS.slice(0,4), "MID", "VOLANTE"));
-  teamB.push(...mapAttendance(mfS.slice(4,8), "MID", "VOLANTE"));
+          try {
+            goalSound.currentTime = 0;
+            goalSound.play().catch(()=>{});
+          } catch(e) {}
 
-  teamA.push(...mapAttendance(fwS.slice(0,2), "FWD", "DELANTERO"));
-  teamB.push(...mapAttendance(fwS.slice(2,4), "FWD", "DELANTERO"));
+          alert("⚽ EQUIPO A CREADO");
+          return;
+        }
 
-  st.teamAPlayers = teamA;
-  st.teamBPlayers = teamB;
+        // is20 → repartir A/B
+        const gkS = shuffleArray(gk);
+        const dfS = shuffleArray(df);
+        const mfS = shuffleArray(mf);
+        const fwS = shuffleArray(fw);
 
-  saveAppState();
-  renderTeamsUI();
-  rebuildGoalPlayerOptions();
-  buildPaymentsTable();
-  renderDiscipline();
-  updateTeamTitles();
+        const teamA = [];
+        const teamB = [];
 
-  try {
-    goalSound.currentTime = 0;
-    goalSound.play().catch(()=>{});
-  } catch(e) {}
+        teamA.push(...mapAttendance([gkS[0]], "GK", "ARQUERO"));
+        teamB.push(...mapAttendance([gkS[1]], "GK", "ARQUERO"));
 
-  alert("⚽ EQUIPOS CREADOS");
-});
+        teamA.push(...mapAttendance(dfS.slice(0,3), "DEF", "DEFENSA"));
+        teamB.push(...mapAttendance(dfS.slice(3,6), "DEF", "DEFENSA"));
 
+        teamA.push(...mapAttendance(mfS.slice(0,4), "MID", "VOLANTE"));
+        teamB.push(...mapAttendance(mfS.slice(4,8), "MID", "VOLANTE"));
+
+        teamA.push(...mapAttendance(fwS.slice(0,2), "FWD", "DELANTERO"));
+        teamB.push(...mapAttendance(fwS.slice(2,4), "FWD", "DELANTERO"));
+
+        st.teamAPlayers = teamA;
+        st.teamBPlayers = teamB;
+
+        saveAppState();
+        renderTeamsUI();
+        rebuildGoalPlayerOptions();
+        buildPaymentsTable();
+        renderDiscipline();
+        updateTeamTitles();
+
+        try {
+          goalSound.currentTime = 0;
+          goalSound.play().catch(()=>{});
+        } catch(e) {}
+
+        alert("⚽ EQUIPOS CREADOS");
+      });
 
       teamAJerseySelect.addEventListener("change", () => {
         currentState().teamAJersey = teamAJerseySelect.value;
@@ -1619,7 +1701,10 @@ btnCreateTeams.addEventListener("click", () => {
           .map(([id,minutes])=>({id:parseInt(id,10), minutes}))
           .filter(e=>Array.isArray(e.minutes) && e.minutes.length>0);
 
-        if (!entries.length) return;
+        if (!entries.length) {
+          updateScoreboard();
+          return;
+        }
 
         entries.sort((a,b)=>b.minutes.length - a.minutes.length);
         const maxGoals = entries[0].minutes.length;
@@ -1669,6 +1754,8 @@ btnCreateTeams.addEventListener("click", () => {
           tr.appendChild(delTd);
           goalsTableBody.appendChild(tr);
         });
+
+        updateScoreboard();
       }
 
       btnAddGoal.addEventListener("click", () => {
@@ -1748,54 +1835,49 @@ btnCreateTeams.addEventListener("click", () => {
           row.appendChild(cardsDiv);
 
           const actionsDiv = document.createElement("div");
-actionsDiv.className = "discipline-actions";
+          actionsDiv.className = "discipline-actions";
 
-// Botón AMARILLA
-const btnYellow = document.createElement("button");
-btnYellow.type = "button";
-btnYellow.className = "btn-yellow";
-btnYellow.textContent = "🟨";
-btnYellow.title = "Agregar amarilla";
-btnYellow.addEventListener("click", () => {
-  const c = st.cards[p.id] || { yellow: 0, red: 0 };
-  c.yellow += 1;
-  st.cards[p.id] = c;
-  saveAppState();
-  renderDiscipline();
-});
+          const btnYellow = document.createElement("button");
+          btnYellow.type = "button";
+          btnYellow.className = "btn-yellow";
+          btnYellow.textContent = "🟨";
+          btnYellow.title = "Agregar amarilla";
+          btnYellow.addEventListener("click", () => {
+            const c = st.cards[p.id] || { yellow: 0, red: 0 };
+            c.yellow += 1;
+            st.cards[p.id] = c;
+            saveAppState();
+            renderDiscipline();
+          });
 
-// Botón ROJA
-const btnRed = document.createElement("button");
-btnRed.type = "button";
-btnRed.className = "btn-red";
-btnRed.textContent = "🟥";
-btnRed.title = "Agregar roja";
-btnRed.addEventListener("click", () => {
-  const c = st.cards[p.id] || { yellow: 0, red: 0 };
-  c.red += 1;
-  st.cards[p.id] = c;
-  saveAppState();
-  renderDiscipline();
-});
+          const btnRed = document.createElement("button");
+          btnRed.type = "button";
+          btnRed.className = "btn-red";
+          btnRed.textContent = "🟥";
+          btnRed.title = "Agregar roja";
+          btnRed.addEventListener("click", () => {
+            const c = st.cards[p.id] || { yellow: 0, red: 0 };
+            c.red += 1;
+            st.cards[p.id] = c;
+            saveAppState();
+            renderDiscipline();
+          });
 
-// Botón BORRAR TARJETAS de este jugador
-const btnClear = document.createElement("button");
-btnClear.type = "button";
-btnClear.className = "btn-secondary";
-btnClear.textContent = "❌";
-btnClear.title = "Borrar tarjetas de este jugador";
-btnClear.addEventListener("click", () => {
-  // Dejarlo sin tarjetas
-  delete st.cards[p.id]; // o: st.cards[p.id] = { yellow: 0, red: 0 };
-  saveAppState();
-  renderDiscipline();
-});
+          const btnClear = document.createElement("button");
+          btnClear.type = "button";
+          btnClear.className = "btn-secondary";
+          btnClear.textContent = "❌";
+          btnClear.title = "Borrar tarjetas de este jugador";
+          btnClear.addEventListener("click", () => {
+            delete st.cards[p.id];
+            saveAppState();
+            renderDiscipline();
+          });
 
-actionsDiv.appendChild(btnYellow);
-actionsDiv.appendChild(btnRed);
-actionsDiv.appendChild(btnClear);
-row.appendChild(actionsDiv);
-
+          actionsDiv.appendChild(btnYellow);
+          actionsDiv.appendChild(btnRed);
+          actionsDiv.appendChild(btnClear);
+          row.appendChild(actionsDiv);
 
           disciplineContainer.appendChild(row);
         });
@@ -2104,9 +2186,7 @@ row.appendChild(actionsDiv);
         saveAppState();
       });
 
-      // ==========================
-      // CANCHA (IMPORTANTE)
-      // ==========================
+      // CANCHA
       btnGeneratePitch.addEventListener("click", () => {
         const st = currentState();
         const canvas = pitchCanvas;
@@ -2114,7 +2194,6 @@ row.appendChild(actionsDiv);
         const W = canvas.width;
         const H = canvas.height;
 
-        // Fondo césped
         ctx.fillStyle = "#0b7a25";
         ctx.fillRect(0,0,W,H);
 
@@ -2124,17 +2203,14 @@ row.appendChild(actionsDiv);
           ctx.fillRect(0,y,W,H/10);
         }
 
-        // Líneas exteriores
         ctx.strokeStyle = "#ffffff";
         ctx.lineWidth = 4;
         ctx.strokeRect(40,40,W-80,H-80);
 
-        // Círculo central
         ctx.beginPath();
         ctx.arc(W/2,H/2,80,0,Math.PI*2);
         ctx.stroke();
 
-        // Áreas
         function drawHalf(isTop) {
           ctx.strokeRect(
             W/4,
@@ -2152,7 +2228,6 @@ row.appendChild(actionsDiv);
         drawHalf(true);
         drawHalf(false);
 
-        // Logo central
         const logo = document.getElementById("logoCalidosos");
         if (logo && logo.complete) {
           const logoW = 360;
@@ -2163,30 +2238,25 @@ row.appendChild(actionsDiv);
           ctx.restore();
         }
 
-        // DIBUJO DE JUGADOR
         function drawPlayer(x, y, name, color) {
           ctx.save();
 
           const R = 30;
 
-          // Sombra
           ctx.fillStyle = "rgba(0,0,0,0.55)";
           ctx.beginPath();
           ctx.arc(x, y, R+4, 0, Math.PI * 2);
           ctx.fill();
 
-          // Círculo
           ctx.fillStyle = color;
           ctx.beginPath();
           ctx.arc(x, y, R, 0, Math.PI * 2);
           ctx.fill();
 
-          // Borde
           ctx.strokeStyle = "#ffffff";
           ctx.lineWidth = 3;
           ctx.stroke();
 
-          // Nombre (20px) FUERA del círculo
           let label = (name || "Jugador").trim();
           if (label.length > 14) label = label.slice(0, 14) + "…";
 
@@ -2195,13 +2265,12 @@ row.appendChild(actionsDiv);
           ctx.textAlign = "center";
           ctx.textBaseline = "top";
 
-          const labelY = y + R + 4; // por debajo del círculo
+          const labelY = y + R + 4;
           ctx.fillText(label, x, labelY);
 
           ctx.restore();
         }
 
-        // DIBUJAR EQUIPO EN MITAD
         function drawTeamOnHalf(team, isTop) {
           const players = getTeamPlayers(team);
 
@@ -2210,9 +2279,8 @@ row.appendChild(actionsDiv);
           const mids = players.filter(p => p.role === "MID").slice(0, 3);
           const fwds = players.filter(p => p.role === "FWD").slice(0, 1);
 
-          const color = team === "A" ? "#fbbf24" : "#22c55e"; // dorado / verde
+          const color = team === "A" ? "#fbbf24" : "#22c55e";
 
-          // Y FIJOS (NO SIMÉTRICOS PARA EVITAR CHOQUES EN MEDIO)
           const yGK_top    = 160;
           const yDEF_top   = 290;
           const yMID_top   = 420;
@@ -2228,10 +2296,9 @@ row.appendChild(actionsDiv);
           const yMid = isTop ? yMID_top : yMID_bot;
           const yFwd = isTop ? yFWD_top : yFWD_bot;
 
-          // Línea genérica más abierta lateralmente
           function lineY(list, y) {
             if (!list.length) return;
-            const marginX = 80; // margen lateral grande
+            const marginX = 80;
             const usableW = W - marginX * 2;
             const step = usableW / (list.length + 1);
 
@@ -2241,13 +2308,9 @@ row.appendChild(actionsDiv);
             });
           }
 
-          // Portero
           if (gk.length) lineY(gk, yGK);
-
-          // Defensas
           if (defs.length) lineY(defs, yDef);
 
-          // Mediocampo (tres bien abiertos)
           if (mids.length) {
             const spacing = 150;
             const centerX = W / 2;
@@ -2259,7 +2322,6 @@ row.appendChild(actionsDiv);
             });
           }
 
-          // Delantero retrasado / adelantado según mitad
           if (fwds.length) {
             fwds.forEach(p => {
               const x = W / 2;
@@ -2271,14 +2333,12 @@ row.appendChild(actionsDiv);
         drawTeamOnHalf("A", true);
         drawTeamOnHalf("B", false);
 
-        // Texto inferior
         ctx.fillStyle = "#f9fafb";
         ctx.font = "20px system-ui";
         ctx.textAlign = "center";
         ctx.textBaseline = "bottom";
         ctx.fillText("Organizador: Darinel Falcón", W/2, H-20);
 
-        // Descargar imagen
         try {
           const link = document.createElement("a");
           link.download = "alineaciones_cancha.jpg";

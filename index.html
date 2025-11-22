@@ -70,6 +70,21 @@
       font-weight: 600;
     }
 
+    .reset-button {
+      margin-left: auto;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #b91c1c;
+      color: #f9fafb;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+
+    .reset-button:hover {
+      background: #dc2626;
+    }
+
     .card {
       background: #020617;
       border-radius: 12px;
@@ -530,6 +545,7 @@
       <button class="list-button active" data-list="0">Lista 1</button>
       <button class="list-button" data-list="1">Lista 2</button>
       <button class="list-button" data-list="2">Lista 3</button>
+      <button id="btnResetMatch" class="reset-button" title="Limpiar partido actual">🧹</button>
     </div>
 
     <div class="card">
@@ -605,10 +621,19 @@
           </p>
 
           <button class="btn btn-primary btn-block" id="btnCreateTeams">
-            ⚽ CREAR EQUIPOS
-          </button>
+  ⚽ CREAR EQUIPOS
+</button>
+
+<div class="export-box">
+  <label for="exportAsistencia">Texto generado (WhatsApp):</label>
+  <textarea id="exportAsistencia"></textarea>
+  <button class="btn btn-primary btn-block" id="btnExportAsistencia">
+    📄 Generar texto de asistencia
+  </button>
+</div>
         </div>
       </div>
+
 
       <!-- TAB 1: EQUIPOS -->
       <div id="tab-equipos" class="tab-content">
@@ -733,7 +758,7 @@
             Información adicional
             <span class="emoji-toggle" data-target="extraEmojiPanel">😊</span>
           </label>
-          <textarea id="extraInfo" placeholder="ℂ𝔸𝕄𝔹𝕀𝕆𝕊 ℝ𝕆𝕋𝔸𝕋𝕀𝕍𝕆𝕊...&#10;𝙴𝙽𝙲𝙰𝚁𝙆𝙰𝙳𝙊: 𝐃𝐚𝐫𝐢𝐧𝐞𝐥 𝐅𝐚𝐥𝐜𝐨́𝐧&#10;..."></textarea>
+          <textarea id="extraInfo" placeholder="ℂ𝔸𝕄𝔹𝕀𝕆𝕊 ℝ𝕆𝕋𝔸𝕋𝕀𝕍𝕆𝕊...&#10;𝙴𝙽𝙲𝙰𝚁GADO: 𝐃𝐚𝐫𝐢𝐧𝐞𝐥 𝐅𝐚𝐥𝐜𝐨́𝐧&#10;..."></textarea>
           <div id="extraEmojiPanel" class="emoji-panel"></div>
         </div>
 
@@ -884,21 +909,40 @@
     const APP_STORAGE_KEY = "calidosos_app_partido_v3";
     const PAYMENT_TOTAL = 4.00;
 
-    const HEADER_EMOJIS = [
+        const HEADER_EMOJIS = [
       "🏟️","📅","🐻","⚽","🥅","🔥","📍","⏰","📋",
       "0️⃣","1️⃣","2️⃣","3️⃣","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣","9️⃣",
-      "💰","👀","↪️","⇢","➤","⭐","🕒","🏃‍♂","💨"
+      "💰","👀","↪","⇢","➤","⭐","🕒","🏃‍♂","💨"
     ];
 
     const EXTRA_EMOJIS = [
       "⚽","🥅","🏟️","🕒","💰","👀","📢","✅","❌",
-      "😊","😎","📅","⏰","↪️","⬅️","➡️","⬆️","⬇️"
+      "😊","😎","📅","⏰","↪","⬅️","➡️","⬆️","⬇️"
     ];
+
+    const DEFAULT_HEADER = `🏟️  ℂ𝔸ℕℂℍ𝔸 𝔹𝕆𝕄𝔹𝕆ℕ𝔼ℝ𝔸 🏟️
+𝔽𝔼ℂℍ𝔸 : ...`;
+
+    const DEFAULT_EXTRA_INFO = `👉 CAMBIOS ROTATIVOS 👈
+🕒 {Cada 7 Minutos} 🕒
+
+ENCARGADO: Darinel Falcón
+PRECIO: 4.00 💰
+*_____________________________*
+
+POSDATA: 🧠
+Jugador que no asiste al partido y no justifica su ausencia con tiempo tiene que pagar su parte de la cancha ESE MISMO DÍA, NO DOS NI TRES DÍAS DESPUÉS. 👀
+
+(DE NO IR AVISAR MÍNIMO 8️⃣ HORAS ANTES DEL PARTIDO)
+
+PARTIDO AMISTOSO
+🏟️⚽🏃‍♂️🔥
+*_____________________________*`;
 
     function defaultListState() {
       return {
         header: "",
-        extraInfo: "",
+        extraInfo: DEFAULT_EXTRA_INFO,
         teamAName: "",
         teamBName: "",
         teamAJersey: "🟥",
@@ -1034,6 +1078,159 @@
         hund.toString().padStart(2,"0")
       );
     }
+// ========= FUNCIONES PARA TEXTO DE ASISTENCIA =========
+
+function numeroAEmojis(num) {
+  const mapa = {
+    "0": "0️⃣", "1": "1️⃣", "2": "2️⃣", "3": "3️⃣", "4": "4️⃣",
+    "5": "5️⃣", "6": "6️⃣", "7": "7️⃣", "8": "8️⃣", "9": "9️⃣",
+  };
+
+  return num
+    .toString()
+    .split("")
+    .map(d => mapa[d] || d)
+    .join(" ");
+}
+
+function formatearFechaConEmojis(fechaStr) {
+  if (!fechaStr) return "Sin fecha";
+
+  let date;
+
+  if (fechaStr.includes("-")) {
+    const [year, month, day] = fechaStr.split("-");
+    date = new Date(year, month - 1, day);
+  } else if (fechaStr.includes("/")) {
+    const [month, day, year] = fechaStr.split("/");
+    date = new Date(year, month - 1, day);
+  } else {
+    return fechaStr;
+  }
+
+  const dias = [
+    "Domingo","Lunes","Martes","Miércoles",
+    "Jueves","Viernes","Sábado"
+  ];
+  const meses = [
+    "Enero","Febrero","Marzo","Abril","Mayo","Junio",
+    "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
+  ];
+
+  const diaSemana = dias[date.getDay()];
+  const diaNum = date.getDate();
+  const mesNombre = meses[date.getMonth()];
+  const diaEmoji = numeroAEmojis(diaNum);
+
+  return `${diaSemana} ${diaEmoji} de ${mesNombre}`;
+}
+
+function crearLineaJugadorListado(numero, nombre, rol) {
+  if (!rol) rol = "";
+  const limpio = (nombre || "").trim();
+  if (!limpio) {
+    return `${numero}. __________ ${rol}`.trim();
+  }
+  return `${numero}. ${limpio} ${rol}`.trim();
+}
+
+function crearEncabezadoAsistenciaDesdeState(st) {
+  const nombreEstadio = "CANCHA BOMBONERA";
+  const nombreEspaciado = nombreEstadio.split("").join(" ");
+  const emojiEstadio = "🏟️";
+
+  const fechaStr = st.attendanceDate || "";
+  const fechaFormateada = formatearFechaConEmojis(fechaStr);
+
+  const rival = (st.attendanceRivalName || "RIVAL").toUpperCase();
+
+  let encabezado = "";
+  encabezado += `${emojiEstadio} ${nombreEspaciado} ${emojiEstadio}\n\n`;
+  encabezado += `FECHA : ↩ ${fechaFormateada} 🗓️\n`;
+  encabezado += `HORA  : ↩ __ Pm ⏰\n`; // el usuario luego escribe la hora real
+  encabezado += `RIVAL : ${rival}\n\n`;
+
+  return encabezado;
+}
+
+function generarListadoAsistenciaDesdeState(st) {
+  const gks = st.attendanceGKs || [];
+  const defs = st.attendanceDefs || [];
+  const mids = st.attendanceMids || [];
+  const fwds = st.attendanceFwds || [];
+
+  let lineas = [];
+  let num = 1;
+
+  lineas.push("LISTADO ✍️", "", "ARQUERO 🧤");
+
+  // PORTEROS (todos con ARQUERO 🧤)
+  gks.forEach(p => {
+    lineas.push(crearLineaJugadorListado(num, p.name, "ARQUERO"));
+    num++;
+  });
+  lineas.push("");
+
+  // DEFENSAS
+  const rolesDefsBase = ["CENTRAL IZQ.", "CENTRAL", "CENTRAL DER."];
+  lineas.push("DEFENSAS 🛡️");
+  defs.forEach((p, idx) => {
+    const rol = rolesDefsBase[idx] || "CENTRAL"; // extras usan CENTRAL
+    lineas.push(crearLineaJugadorListado(num, p.name, rol));
+    num++;
+  });
+  lineas.push("");
+
+  // VOLANTES / MEDIOS
+  const rolesMidsBase = ["MEDIO CENTRO", "MEDIO CENTRO", "EXTREMO IZQ.", "EXTREMO DER."];
+  lineas.push("VOLANTES ⚙️");
+  mids.forEach((p, idx) => {
+    const rol = rolesMidsBase[idx] || "MEDIO";
+    lineas.push(crearLineaJugadorListado(num, p.name, rol));
+    num++;
+  });
+  lineas.push("");
+
+  // DELANTEROS
+  const rolesFwdsBase = ["PUNTERO", "PUNTERO"];
+  lineas.push("DELANTEROS 🎯");
+  fwds.forEach((p, idx) => {
+    const rol = rolesFwdsBase[idx] || "PUNTERO";
+    lineas.push(crearLineaJugadorListado(num, p.name, rol));
+    num++;
+  });
+  lineas.push("");
+
+  return lineas.join("\n");
+}
+
+function generarBloqueCambiosRotativos() {
+  return [
+    "👉 CAMBIOS ROTATIVOS 👈",
+    "🕒 {Cada 7 Minutos} 🕒",
+    "",
+    "ENCARGADO: Darinel Falcón",
+    "PRECIO: 4.00 💰",
+    "*_____________________________*",
+    "",
+    "POSDATA: 🧠",
+    "Jugador que no asiste al partido y no justifica su ausencia con tiempo tiene que pagar su parte de la cancha ESE MISMO DÍA, NO DOS NI TRES DÍAS DESPUÉS. 👀",
+    "",
+    "(DE NO IR AVISAR MÍNIMO 8️⃣ HORAS ANTES DEL PARTIDO)",
+    "",
+    "PARTIDO AMISTOSO",
+    "🏟️⚽🏃‍♂️🔥",
+    "*_____________________________*",
+  ].join("\n");
+}
+
+function generarTextoAsistenciaCompleto(st) {
+  let texto = "";
+  texto += crearEncabezadoAsistenciaDesdeState(st);
+  texto += generarListadoAsistenciaDesdeState(st);
+  texto += "\n" + generarBloqueCambiosRotativos();
+  return texto;
+}
 
     document.addEventListener("DOMContentLoaded", () => {
       loadAppState();
@@ -1041,6 +1238,7 @@
       const listButtons = document.querySelectorAll(".list-button");
       const tabButtons = document.querySelectorAll(".tab-button");
       const tabContents = document.querySelectorAll(".tab-content");
+      const btnResetMatch = document.getElementById("btnResetMatch");
 
       const matchHeader = document.getElementById("matchHeader");
       const extraInfo = document.getElementById("extraInfo");
@@ -1068,6 +1266,9 @@
       const btnAddMid = document.getElementById("btnAddMid");
       const btnAddFwd = document.getElementById("btnAddFwd");
       const btnCreateTeams = document.getElementById("btnCreateTeams");
+      const btnExportAsistencia = document.getElementById("btnExportAsistencia");
+      const exportAsistencia = document.getElementById("exportAsistencia");
+
 
       const teamAGKContainer = document.getElementById("teamAGKContainer");
       const teamADefContainer = document.getElementById("teamADefContainer");
@@ -1170,6 +1371,51 @@
         if (!players.some(p=>p.role==="GK")) {
           players.unshift({id: st.nextPlayerId++, role:"GK", name:"", pos:"ARQUERO"});
         }
+      }
+
+      // Reinicia todo lo relacionado al partido de la lista actual
+      function resetCurrentMatchState() {
+        const st = currentState();
+
+        // Detener cronómetro
+        clearInterval(timerInterval);
+        timerInterval = null;
+        st.timerRunning = false;
+        st.timerMs = 0;
+
+        // Limpiar equipos y volver a crear arqueros vacíos
+        st.teamAPlayers = [];
+        st.teamBPlayers = [];
+        ensureGK("A");
+        ensureGK("B");
+
+        // Limpiar reservas
+        st.reserves = ["", "", "", "", ""];
+
+        // Limpiar goles, tarjetas y pagos
+        st.goals = {};
+        st.cards = {};
+        st.payments = {};
+
+        // Limpiar asistencia (pantalla de Asistencia)
+        st.attendanceLocalName = "";
+        st.attendanceRivalName = "";
+        st.attendanceDate = "";
+        st.attendanceNextId = 1;
+        st.attendanceGKs = [];
+        st.attendanceDefs = [];
+        st.attendanceMids = [];
+        st.attendanceFwds = [];
+
+        // Limpiar textos generados
+        exportAsistencia.value = "";
+        exportEquipos.value = "";
+        exportGoles.value = "";
+        exportPagos.value = "";
+
+        saveAppState();
+        hydrateUIFromState();
+        updateTimerDisplay();
       }
 
       function allPlayersFlat() {
@@ -1374,15 +1620,24 @@
         renderSection("attendanceFwds", attendanceFwdContainer);
       }
 
-      function hydrateUIFromState() {
+            function hydrateUIFromState() {
         const st = currentState();
-        matchHeader.value = st.header || "";
-        extraInfo.value = st.extraInfo || "";
+
+        // Asegurar encabezado por defecto si está vacío
+        if (!st.header) {
+          st.header = DEFAULT_HEADER;
+        }
+        if (!st.extraInfo) {
+          st.extraInfo = DEFAULT_EXTRA_INFO;
+        }
+
+        matchHeader.value = st.header;
+        extraInfo.value = st.extraInfo;
         teamANameInput.value = st.teamAName || "";
         teamBNameInput.value = st.teamBName || "";
         teamAJerseySelect.value = st.teamAJersey || "🟥";
         teamBJerseySelect.value = st.teamBJersey || "🟦";
-
+      
         attendanceLocalNameInput.value = st.attendanceLocalName || "";
         attendanceRivalNameInput.value = st.attendanceRivalName || "";
         attendanceDateInput.value = st.attendanceDate || "";
@@ -1443,6 +1698,13 @@
         const st = currentState();
         st.attendanceDate = attendanceDateInput.value;
         saveAppState();
+      });
+
+      // TEXTO DE ASISTENCIA (WHATSAPP)
+      btnExportAsistencia.addEventListener("click", () => {
+        const st = currentState();
+        const texto = generarTextoAsistenciaCompleto(st);
+        exportAsistencia.value = texto;
       });
 
       function addAttendancePlayer(key, max) {
@@ -1678,6 +1940,16 @@
           hydrateUIFromState();
         });
       });
+
+      // Botón escoba: limpiar partido de la lista actual
+      if (btnResetMatch) {
+        btnResetMatch.addEventListener("click", () => {
+          if (!confirm("¿Seguro que quieres limpiar TODO el partido de esta lista? (jugadores, reservas, goles, cronómetro, tarjetas, pagos y asistencia)")) {
+            return;
+          }
+          resetCurrentMatchState();
+        });
+      }
 
       // GOLES
       function rebuildGoalPlayerOptions() {

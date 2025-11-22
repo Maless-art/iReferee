@@ -1683,29 +1683,67 @@ function generarTextoAsistenciaCompleto(st) {
       });
 
       attendanceLocalNameInput.addEventListener("input", () => {
-        const st = currentState();
-        st.attendanceLocalName = attendanceLocalNameInput.value;
-        saveAppState();
-      });
+  const st = currentState();
+  st.attendanceLocalName = attendanceLocalNameInput.value;
 
-      attendanceRivalNameInput.addEventListener("input", () => {
-        const st = currentState();
-        st.attendanceRivalName = attendanceRivalNameInput.value;
-        saveAppState();
-      });
+  // Copiar también al nombre del Equipo A
+  st.teamAName = st.attendanceLocalName;
+  teamANameInput.value = st.teamAName;
 
-      attendanceDateInput.addEventListener("change", () => {
-        const st = currentState();
-        st.attendanceDate = attendanceDateInput.value;
-        saveAppState();
-      });
+  saveAppState();
+  updateTeamTitles();
+  rebuildGoalPlayerOptions();
+  buildPaymentsTable();
+  renderDiscipline();
+});
+
+attendanceRivalNameInput.addEventListener("input", () => {
+  const st = currentState();
+  st.attendanceRivalName = attendanceRivalNameInput.value;
+
+  // Copiar también al nombre del Equipo B
+  st.teamBName = st.attendanceRivalName;
+  teamBNameInput.value = st.teamBName;
+
+  saveAppState();
+  updateTeamTitles();
+  rebuildGoalPlayerOptions();
+  buildPaymentsTable();
+  renderDiscipline();
+});
+
 
       // TEXTO DE ASISTENCIA (WHATSAPP)
       btnExportAsistencia.addEventListener("click", () => {
-        const st = currentState();
-        const texto = generarTextoAsistenciaCompleto(st);
-        exportAsistencia.value = texto;
-      });
+  const st = currentState();
+
+  // 1. Generar el texto de asistencia
+  const texto = generarTextoAsistenciaCompleto(st);
+  exportAsistencia.value = texto;
+
+  // 2. Construir el mismo encabezado que usa la asistencia
+  const headerFromAsistencia = crearEncabezadoAsistenciaDesdeState(st);
+
+  // 3. Copiarlo al encabezado de la pestaña EQUIPOS
+  st.header = headerFromAsistencia;
+  matchHeader.value = headerFromAsistencia;
+
+  // 4. De paso, sincronizar nombres de equipos si existen
+  if (st.attendanceLocalName) {
+    st.teamAName = st.attendanceLocalName;
+    teamANameInput.value = st.teamAName;
+  }
+  if (st.attendanceRivalName) {
+    st.teamBName = st.attendanceRivalName;
+    teamBNameInput.value = st.teamBName;
+  }
+
+  saveAppState();
+  updateTeamTitles();
+  rebuildGoalPlayerOptions();
+  buildPaymentsTable();
+  renderDiscipline();
+});
 
       function addAttendancePlayer(key, max) {
         const st = currentState();
@@ -2161,10 +2199,15 @@ function generarTextoAsistenciaCompleto(st) {
 
       // PAGOS
       function buildPaymentsTable() {
-        const st = currentState();
-        paymentsTableBody.innerHTML = "";
-        const players = allPlayersFlat();
-        let total = 0;
+  const st = currentState();
+  paymentsTableBody.innerHTML = "";
+
+  // Solo jugadores que tengan nombre escrito
+  const players = allPlayersFlat().filter(
+    p => (p.name || "").trim() !== ""
+  );
+
+  let total = 0;
 
         players.forEach(p => {
           const tr = document.createElement("tr");

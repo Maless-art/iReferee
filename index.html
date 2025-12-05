@@ -2,1774 +2,2682 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <title>PIC – Professional Inventory Control</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#020617">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black">
-<meta name="apple-mobile-web-app-title" content="PIC">
-<link rel="manifest" href="manifest.webmanifest">
-  <!-- Estilos básicos -->
+  <title>Calidosos FC - App de Partido</title>
+  <!-- iOS: abrir como app a pantalla completa -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black">
+  <meta name="apple-mobile-web-app-title" content="i-Referee">
+  <!-- Icono cuando se guarda en pantalla de inicio -->
+  <link rel="apple-touch-icon" href="calidosos-logo.png">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <style>
     * {
       box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
     }
-    :root {
-      --bg-main: #050816;
-      --bg-card: #101827;
-      --accent: #00b4d8;
-      --accent-soft: rgba(0, 180, 216, 0.12);
-      --accent-strong: #06d6a0;
-      --text-main: #e5e7eb;
-      --text-muted: #9ca3af;
-      --border-soft: #1f2933;
-      --danger: #ef4444;
-      --warn: #f59e0b;
-      --ok: #10b981;
-    }
+
     body {
       margin: 0;
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
-        sans-serif;
-      background: radial-gradient(circle at top, #111827 0, #020617 45%, #000 100%);
-      color: var(--text-main);
-      min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-    /* Splash */
-    #splash {
-      position: fixed;
-      inset: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: radial-gradient(circle at top, #020617 0, #000 55%);
-      z-index: 50;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-    #splash-logo {
-      width: 170px;
-      height: auto;
-      filter: drop-shadow(0 0 25px rgba(0, 180, 216, 0.7));
-    }
-    #splash-text {
-      font-size: 1.1rem;
-      color: var(--text-muted);
-      letter-spacing: 0.08em;      
-    }
-    #splash-progress {
-      width: 230px;
-      height: 6px;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.9);
-      overflow: hidden;
-      box-shadow: 0 0 25px rgba(0, 0, 0, 0.6);
-    }
-    #splash-bar {
-      width: 0;
-      height: 100%;
-      background: linear-gradient(90deg, var(--accent), var(--accent-strong));
-      animation: loadBar 1.4s ease-out forwards;
-    }
-    @keyframes loadBar {
-      from { width: 0; }
-      to   { width: 100%; }
+      padding: 0;
+      background: #0f172a;
+      color: #e5e7eb;
     }
 
-    /* App shell */
-    #app {
-      display: none;
-      width: min(1200px, 100%);
-      padding: 1.5rem;
-    }
-    .card {
-      background: radial-gradient(circle at top left,
-        rgba(15, 23, 42, 0.9) 0,
-        rgba(12, 19, 35, 0.98) 45%,
-        #020617 100%);
-      border-radius: 18px;
-      border: 1px solid rgba(148, 163, 184, 0.18);
-      box-shadow:
-        0 24px 60px rgba(0, 0, 0, 0.75),
-        0 0 0 1px rgba(15, 23, 42, 0.9);
-      padding: 1.75rem 2rem 2rem;
-      backdrop-filter: blur(18px);
-    }
-    .header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 1.5rem;
-      gap: 1.25rem;
-    }
-    .header-main {
-      display: flex;
-      align-items: center;
-      gap: 1rem;
-    }
-    .header-logo {
-      width: 80px;
-      height: auto;
-    }
-    .header-title {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-    }
-    .header-title h1 {
-      margin: 0;
-      font-size: 1.4rem;
-      letter-spacing: 0.22em;
-      text-transform: uppercase;
-      color: var(--accent);
-    }
-    .header-title h2 {
-      margin: 0;
-      font-size: 1rem;
-      font-weight: 500;
-      color: var(--text-main);
-    }
-    .header-sub {
-      margin: 0;
-      font-size: 0.8rem;
-      color: var(--text-muted);
-    }
-    .badge-version {
-      padding: 0.45rem 0.85rem;
-      border-radius: 999px;
-      background: rgba(15, 23, 42, 0.9);
-      color: var(--accent-strong);
-      font-size: 0.75rem;
-      border: 1px solid rgba(56, 189, 248, 0.4);
-      text-transform: uppercase;
-      letter-spacing: 0.08em;
+    .app-container {
+      max-width: 480px;
+      margin: 0 auto;
+      padding: 12px;
     }
 
-    /* Top controls */
-    .top-controls {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      margin-bottom: 1rem;
-      align-items: center;
+    h1 {
+      font-size: 1.3rem;
+      text-align: center;
+      margin: 8px 0 8px;
     }
-    .btn {
-      border-radius: 999px;
+
+    .logo {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 4px;
+    }
+
+    .logo img {
+      max-width: 120px;
+      height: auto;
+    }
+
+    .lists-switcher {
+      display: flex;
+      justify-content: center;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .list-button {
       border: none;
-      padding: 0.55rem 1.1rem;
-      font-size: 0.85rem;
-      display: inline-flex;
-      align-items: center;
-      gap: 0.4rem;
-      cursor: pointer;
-      font-weight: 500;
-      letter-spacing: 0.03em;
-      text-transform: uppercase;
-      transition: transform 0.08s ease-out, box-shadow 0.08s ease-out,
-        background 0.12s ease-out;
-      white-space: nowrap;
-    }
-    .btn-primary {
-      background: radial-gradient(circle at top left,
-        var(--accent) 0,
-        #0284c7 40%,
-        #0369a1 100%);
-      color: #e5f4ff;
-      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.4),
-        0 16px 40px rgba(37, 99, 235, 0.45);
-    }
-    .btn-warning {
-      background: radial-gradient(circle at top left,
-        #f97316 0,
-        #ea580c 40%,
-        #c2410c 100%);
-      color: #fff7ed;
-      box-shadow: 0 0 0 1px rgba(248, 153, 72, 0.6),
-        0 16px 40px rgba(248, 153, 72, 0.35);
-    }
-    .btn-secondary {
-      background: radial-gradient(circle at top left,
-        #6366f1 0,
-        #4f46e5 40%,
-        #4338ca 100%);
-      color: #eef2ff;
-      box-shadow: 0 0 0 1px rgba(129, 140, 248, 0.7),
-        0 16px 40px rgba(99, 102, 241, 0.45);
-    }
-    .btn:hover {
-      transform: translateY(-1px);
-      box-shadow: 0 18px 45px rgba(0, 0, 0, 0.7);
-    }
-    .btn:active {
-      transform: translateY(0);
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
-    }
-
-    .date-range,
-    .filters-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-      align-items: center;
-      margin-bottom: 0.75rem;
-      font-size: 0.82rem;
-      color: var(--text-muted);
-    }
-    .date-range label,
-    .filters-row label {
-      margin-right: 0.2rem;
-    }
-    input[type="date"],
-    select,
-    .search-input {
-      background: rgba(15, 23, 42, 0.9);
+      padding: 4px 10px;
       border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      padding: 0.35rem 0.75rem;
-      color: var(--text-main);
+      background: #1f2937;
+      color: #9ca3af;
       font-size: 0.8rem;
-      outline: none;
-      min-width: 130px;
-    }
-    input[type="date"]:focus,
-    select:focus,
-    .search-input:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.5);
+      cursor: pointer;
     }
 
-    .search-input {
-      min-width: 220px;
+    .list-button.active {
+      background: #22c55e;
+      color: #020617;
+      font-weight: 600;
     }
 
-    /* Tabs */
+    .reset-button {
+      margin-left: auto;
+      border: none;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: #b91c1c;
+      color: #f9fafb;
+      font-size: 0.8rem;
+      cursor: pointer;
+    }
+
+    .reset-button:hover {
+      background: #dc2626;
+    }
+
+    .card {
+      background: #020617;
+      border-radius: 12px;
+      padding: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.6);
+      border: 1px solid #1f2937;
+    }
+
     .tabs {
       display: flex;
-      border-bottom: 1px solid var(--border-soft);
-      margin: 1rem 0 0.75rem;
+      gap: 4px;
+      margin-bottom: 10px;
     }
-    .tab-btn {
-      padding: 0.55rem 1rem;
-      font-size: 0.82rem;
-      cursor: pointer;
+
+    .tab-button {
+      flex: 1;
+      padding: 8px;
+      border-radius: 999px;
       border: none;
-      background: transparent;
-      color: var(--text-muted);
-      border-bottom: 2px solid transparent;
-      text-transform: uppercase;
-      letter-spacing: 0.06em;
+      background: #1f2937;
+      color: #9ca3af;
+      font-size: 0.85rem;
+      cursor: pointer;
     }
-    .tab-btn.active {
-      color: var(--accent);
-      border-color: var(--accent);
+
+    .tab-button.active {
+      background: #22c55e;
+      color: #020617;
+      font-weight: 600;
     }
-    .tab-panel {
+
+    .tab-content {
       display: none;
+      margin-top: 6px;
     }
-    .tab-panel.active {
+
+    .tab-content.active {
       display: block;
     }
 
-    /* Tables */
-    .table-wrapper {
-      border-radius: 14px;
-      border: 1px solid rgba(31, 41, 55, 0.9);
-      overflow: hidden;
-      box-shadow: inset 0 0 0 1px rgba(15, 23, 42, 0.95);
-      background: radial-gradient(circle at top,
-        rgba(15, 23, 42, 0.96) 0,
-        #020617 60%);
+    label {
+      font-size: 0.8rem;
+      display: block;
+      margin-bottom: 2px;
+      color: #9ca3af;
     }
+
+    input[type="text"],
+    input[type="number"],
+    textarea,
+    select {
+      width: 100%;
+      padding: 6px 8px;
+      border-radius: 8px;
+      border: 1px solid #374151;
+      background: #020617;
+      color: #e5e7eb;
+      font-size: 0.85rem;
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .row > div {
+      flex: 1;
+    }
+
+    .team-block {
+      border: 1px solid #1f2937;
+      border-radius: 10px;
+      padding: 8px;
+      margin-bottom: 8px;
+      background: #020617;
+    }
+
+    .team-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #fbbf24;
+      text-align: center;
+    }
+
+    .team-title span {
+      margin: 0 4px;
+    }
+
+    .position-title {
+      font-size: 0.8rem;
+      font-weight: 600;
+      margin-top: 4px;
+      margin-bottom: 2px;
+      color: #9ca3af;
+    }
+
+    .small {
+      font-size: 0.75rem;
+      color: #9ca3af;
+    }
+
+    .btn {
+      border: none;
+      padding: 7px 10px;
+      border-radius: 999px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .btn-primary {
+      background: #22c55e;
+      color: #020617;
+      font-weight: 600;
+    }
+
+    .btn-secondary {
+      background: #1f2937;
+      color: #e5e7eb;
+    }
+
+    .btn-danger {
+      background: #b91c1c;
+      color: #f9fafb;
+    }
+
+    .btn-block {
+      width: 100%;
+      justify-content: center;
+      margin-top: 6px;
+    }
+
+    .export-box {
+      margin-top: 8px;
+      border-top: 1px dashed #374151;
+      padding-top: 6px;
+    }
+
+    .export-box label {
+      font-weight: 600;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 0.78rem;
-    }
-    thead {
-      background: linear-gradient(
-        90deg,
-        rgba(15, 23, 42, 0.95),
-        rgba(15, 23, 42, 0.8)
-      );
-    }
-    th,
-    td {
-      padding: 0.4rem 0.6rem;
-      border-bottom: 1px solid rgba(31, 41, 55, 0.85);
-      text-align: left;
-      white-space: nowrap;
-    }
-    th {
-      font-weight: 600;
-      color: var(--text-muted);
-    }
-    tbody tr:nth-child(even) {
-      background: rgba(15, 23, 42, 0.75);
-    }
-    tbody tr:nth-child(odd) {
-      background: rgba(15, 23, 42, 0.95);
-    }
-    .col-codigo {
-      width: 80px;
-      font-weight: 600;
-      color: #e5f4ff;
-    }
-    .col-descripcion {
-      min-width: 260px;
-      max-width: 420px;
-      white-space: normal;
-    }
-    .col-um {
-      width: 60px;
-      text-align: center;
-    }
-    .col-num {
-      width: 70px;
-      text-align: right;
-    }
-    .col-input,
-    .col-units {
-      width: 120px;
-      text-align: right;
-    }
-    .input-count {
-      width: 100%;
-      background: rgba(15, 23, 42, 0.8);
-      border-radius: 999px;
-      border: 1px solid rgba(148, 163, 184, 0.4);
-      padding: 0.22rem 0.55rem;
-      color: var(--text-main);
-      font-size: 0.78rem;
-      text-align: right;
-      outline: none;
-    }
-    .input-count:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px rgba(56, 189, 248, 0.6);
+      font-size: 0.8rem;
+      margin-top: 6px;
     }
 
-    .col-diff {
-      width: 80px;
-      text-align: right;
+    th, td {
+      padding: 4px 3px;
+      border-bottom: 1px solid #1f2937;
+      text-align: left;
+      vertical-align: middle;
     }
-    .num-neutral {
-      color: var(--text-muted);
+
+    th {
+      background: #111827;
+      font-weight: 600;
     }
-    .num-positive {
-      color: var(--warn);
+
+    .status-paid {
+      color: #22c55e;
+      font-weight: 700;
     }
-    .num-negative {
-      color: var(--danger);
+
+    .status-unpaid {
+      color: #f87171;
     }
-    .status-pill {
+
+    .player-name-paid {
+      color: #22c55e;
+      font-weight: 700;
+    }
+
+    .player-name-unpaid {
+      color: #ef4444;
+      font-weight: 500;
+    }
+
+    .chip {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
-      padding: 0.12rem 0.55rem;
+      gap: 4px;
+      padding: 3px 7px;
       border-radius: 999px;
       font-size: 0.7rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
+      background: #111827;
+      margin-bottom: 4px;
     }
-    .status-ok {
-      background: rgba(16, 185, 129, 0.1);
-      color: var(--ok);
-      border: 1px solid rgba(16, 185, 129, 0.55);
+
+    details {
+      background: #020617;
+      border-radius: 8px;
+      border: 1px solid #1f2937;
+      padding: 4px 8px 6px;
+      margin-bottom: 6px;
     }
-    .status-warn {
-      background: rgba(245, 158, 11, 0.08);
-      color: var(--warn);
-      border: 1px solid rgba(245, 158, 11, 0.6);
+
+    details summary {
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+      color: #e5e7eb;
+      list-style: none;
     }
-    .status-alert {
-      background: rgba(239, 68, 68, 0.1);
-      color: var(--danger);
-      border: 1px solid rgba(239, 68, 68, 0.7);
+
+    details summary::-webkit-details-marker {
+      display: none;
     }
-    @media (max-width: 900px) {
-      .card {
-        padding: 1.2rem 1rem 1.5rem;
-      }
-      .header-main {
-        flex-direction: row;
-      }
-      .header-logo {
-        width: 65px;
-      }
-      .header-title h1 {
+
+    .player-row {
+      display: flex;
+      gap: 4px;
+      margin-top: 4px;
+    }
+
+    .player-row input {
+      font-size: 0.78rem;
+    }
+
+    .player-row-name {
+      flex: 3;
+    }
+
+    .player-row-pos {
+      flex: 2;
+    }
+
+    .emoji-toggle {
+      cursor: pointer;
+      font-size: 1.1rem;
+      margin-left: 4px;
+    }
+
+    .emoji-panel {
+      display: none;
+      flex-wrap: wrap;
+      gap: 4px;
+      margin-top: 4px;
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid #1f2937;
+      background: #020617;
+      max-height: 110px;
+      overflow-y: auto;
+    }
+
+    .emoji-btn {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 2px 4px;
+    }
+
+    .jersey-select {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 0.8rem;
+    }
+
+    .jersey-select select {
+      max-width: 90px;
+    }
+
+    .delete-goal-btn {
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      font-size: 0.9rem;
+    }
+
+    .total-money {
+      margin-top: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .goal-top-scorer {
+      font-weight: 700;
+    }
+
+    .goals-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px;
+    }
+
+    .goals-logo {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex: 0 0 auto;
+    }
+
+    .goals-logo img {
+      max-width: 90px;
+      height: auto;
+      filter: drop-shadow(0 0 6px rgba(0,0,0,0.8));
+    }
+
+    .timer-display {
+      font-family: "Courier New", monospace;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: #22c55e;
+      text-shadow: 0 0 6px rgba(34,197,94,0.8);
+      letter-spacing: 2px;
+      min-width: 110px;
+      text-align: right;
+    }
+
+    .timer-controls {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .timer-controls button {
+      font-size: 0.7rem;
+      padding: 3px 6px;
+    }
+
+    /* 🔢 MARCADOR */
+    .scoreboard {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin: 6px 0 10px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      background: #020617;
+      border: 1px solid #1f2937;
+      font-size: 0.85rem;
+    }
+
+    .score-team-name {
+      flex: 1;
+      text-align: center;
+      font-weight: 600;
+      color: #e5e7eb;
+    }
+
+    .score-value {
+      flex: 0 0 auto;
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: #fbbf24;
+    }
+
+    .score-value span {
+      display: inline-block;
+      min-width: 18px;
+      text-align: center;
+    }
+
+    .goals-discipline-toggle {
+      display: flex;
+      gap: 4px;
+      margin: 6px 0;
+    }
+
+    .subtab-button {
+      flex: 1;
+      border: none;
+      padding: 6px;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      background: #111827;
+      color: #9ca3af;
+    }
+
+    .subtab-button.active {
+      background: #22c55e;
+      color: #020617;
+      font-weight: 600;
+    }
+
+    .discipline-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 3px 0;
+      border-bottom: 1px solid #1f2937;
+      font-size: 0.78rem;
+    }
+
+    .discipline-name {
+      flex: 1.2;
+    }
+
+    .discipline-cards {
+      flex: 1;
+    }
+
+    .discipline-actions {
+      display: flex;
+      gap: 2px;
+    }
+
+    .discipline-actions button {
+      border: none;
+      padding: 3px 6px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    .btn-yellow {
+      background: #facc15;
+      color: #111827;
+    }
+
+    .btn-red {
+      background: #ef4444;
+      color: #f9fafb;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    @media (max-width: 400px) {
+      h1 {
         font-size: 1.1rem;
       }
-      .header-title h2 {
-        font-size: 0.9rem;
-      }
-      .header-sub {
-        font-size: 0.75rem;
-      }
     }
-/* Tabla PIC: comportamiento general en escritorio */
-.table-wrapper {
-  max-height: 480px;
-  overflow-y: auto;
-  overflow-x: auto;  
-}
-
-.table-wrapper table {
-  width: 100%;
-min-width: 1100px;
-  border-collapse: collapse;
-}
-
-/* Encabezados congelados */
-.table-wrapper thead th {
-  position: sticky;
-  top: 0;
-  z-index: 3;
-  background: #0b1120;
-}
-
-
-/* Versión CELULAR: sin scroll horizontal y columnas clave */
-/* Versión CELULAR: sin scroll horizontal y columnas clave */
-@media (max-width: 768px) {
-  .table-wrapper {
-    max-height: 60vh;
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-
-  .table-wrapper table {
-    width: 100%;
-min-width: 100%;
-    table-layout: fixed;
-  }
-
-  .table-wrapper th,
-  .table-wrapper td {
-    font-size: 11px;
-    padding: 6px 4px;
-    word-break: break-word;
-  }
-
-  /* Ocultamos todo por defecto en móvil */
-  .table-wrapper th,
-  .table-wrapper td {
-    display: none;
-  }
-
-  /* MOSTRAR SOLO:
-     - 1: Código
-     - 2: Descripción
-     - 3: U/M
-     - Estado (si quieres verlo, por su posición)
-     - Conteo físico: la columna marcada con .col-conteo
-  */
-
-  .table-wrapper th:nth-child(1),
-  .table-wrapper td:nth-child(1),
-  .table-wrapper th:nth-child(2),
-  .table-wrapper td:nth-child(2),
-  .table-wrapper th:nth-child(3),
-  .table-wrapper td:nth-child(3),
-  .table-wrapper th:nth-child(4),
-  .table-wrapper td:nth-child(4),
-  .table-wrapper th.col-conteo,
-  .table-wrapper td.col-conteo,
-  .table-wrapper th.col-units,
-  .table-wrapper td.col-units {
-    display: table-cell;
-  }
-
-  .table-wrapper td.col-conteo input,
-  .table-wrapper td.col-units input {
-    width: 100%;
-    font-size: 14px;
-    padding: 6px;
-  }
-.fila-total {
-  border-top: 1px solid rgba(255, 255, 255, 0.08);
-  font-weight: 600;
-}
-
-.total-ganancia {
-  color: #32d296;
-}
-
-.total-perdida {
-  color: #ff6b6b;
-}
-
   </style>
 </head>
 <body>
-  <!-- Splash con logo -->
-  <div id="splash">
-    <!-- 🔁 Cambia el src por la ruta real de tu logo -->
-    <img id="splash-logo" src="logo_pic.png" alt="Luquisa logo" />
-    <div id="splash-text">Preparando módulos<span id="dots">...</span></div>
-    <div id="splash-progress"><div id="splash-bar"></div></div>
-  </div>
+  <!-- Sonido de gol (debes tener goal-sound.mp3 en la misma carpeta) -->
+  <audio id="goalSound" src="goal-sound.mp3" preload="auto"></audio>
 
-  <!-- App -->
-  <div id="app">
+  <div class="app-container">
+    <div class="logo">
+      <img id="logoCalidosos" src="calidosos-logo.png" alt="Calidosos FC" />
+    </div>
+    <h1>Control de Partido - Calidosos FC</h1>
+
+    <!-- Selector de listas -->
+    <div class="lists-switcher">
+      <button class="list-button active" data-list="0">Lista 1</button>
+      <button class="list-button" data-list="1">Lista 2</button>
+      <button class="list-button" data-list="2">Lista 3</button>
+      <button id="btnResetMatch" class="reset-button" title="Limpiar partido actual">🧹</button>
+    </div>
+
     <div class="card">
-      <header class="header">
-        <div class="header-main">
-          <!-- 🔁 Cambia el src por la ruta real de tu logo -->
-          <img
-            class="header-logo"
-            src="logo_pic.png"
-            alt="Luquisa"
-          />
-          <div class="header-title">
-            <h1>PIC</h1>
-            <h2>Professional Inventory Control</h2>
-            <p class="header-sub">
-              Módulo de toma física de inventario · Versión 1.0
-            </p>
-          </div>
-        </div>
-        <span class="badge-version">Luquisa · 26 Aniversario</span>
-      </header>
-
-      <div class="top-controls">
-        <button id="btnLoadExcel" class="btn btn-primary">
-          📂 Cargar archivo Sage (Excel)
-        </button>
-        <button id="btnReset" class="btn btn-warning">
-          ♻️ Reiniciar conteos
-        </button>
-        <button id="btnExportExcel" class="btn btn-secondary">
-          💾 Exportar archivo actualizado
-        </button>
-        <input
-          type="file"
-          id="excelInput"
-          accept=".xlsx,.xls"
-          style="display: none"
-        />
-<span 
-  id="contadorProgreso"
-  style="margin-left:12px; font-size:12px; color:#9ca3af;"
->
-  0 de 0 productos contados
-</span>
-<label style="margin-left:12px; font-size:12px; color:#9ca3af;">
-  Por:
-  <input
-    type="text"
-    id="nombreInspector"
-    placeholder="Nombre del responsable"
-    style="margin-left:6px; padding:3px 8px; border-radius:12px; border:1px solid #555; font-size:12px; background:transparent; color:#fff; width:180px;"
-  />
-</label>
-
-      </div>
-
-      <!-- Rango de fechas -->
-      <div class="date-range">
-        <span>Período de inventario:</span>
-        <label for="dateFrom">Desde:</label>
-        <input type="date" id="dateFrom" />
-        <label for="dateTo">Hasta:</label>
-        <input type="date" id="dateTo" />
-      </div>
-
-      <!-- Filtros -->
-      <div class="filters-row">
-        <label for="filterMarca">Marca:</label>
-        <select id="filterMarca">
-          <option value="__ALL__">Todas</option>
-        </select>
-
-        <label for="filterEsp">Especialidad:</label>
-        <select id="filterEsp">
-          <option value="__ALL__">Todas</option>
-        </select>
-
-        <input
-          type="text"
-          id="searchCajas"
-          class="search-input"
-          placeholder="Buscar por código o descripción"
-        />
-      </div>
-
       <!-- Tabs -->
       <div class="tabs">
-        <button class="tab-btn active" data-tab="tabCajas">
-          Inventario en cajas
-        </button>
-        <button class="tab-btn" data-tab="tabSueltas">
-          Unidades sueltas
-        </button>
-  <button class="tab-btn" data-tab="tabResumen">
-    Resumen ejecutivo
-  </button>
+        <button class="tab-button active" data-tab="asistencia">Asistencia</button>
+        <button class="tab-button" data-tab="equipos">Equipos</button>
+        <button class="tab-button" data-tab="goles">Goles / Disciplina</button>
+        <button class="tab-button" data-tab="pagos">Pagos</button>
       </div>
 
-      <!-- Paneles -->
-      <div id="tabCajas" class="tab-panel active">
-        <div class="table-wrapper">
-          <table>
-<thead>
-  <tr>
-    <th>Código</th>
-    <th>Descripción</th>
-    <th>U/M</th>
-    <th>Sistema</th>
-    <th class="col-conteo">Conteo físico</th>
-    <th>  Unidades</th>
-    <th>  Diferencia</th>
-    <th>  Estado</th>
-  </tr>
-</thead>
-            
-            <tbody id="tbodyCajas"></tbody>
-          </table>
+      <!-- TAB 0: ASISTENCIA / CREAR EQUIPOS -->
+      <div id="tab-asistencia" class="tab-content active">
+        <div class="team-block">
+          <div class="team-title">Asistencia y creación automática de equipos</div>
+
+          <!-- Encabezado: equipos y fecha -->
+          <div class="row">
+            <div>
+              <label for="attendanceLocalName">Equipo local</label>
+              <input
+                id="attendanceLocalName"
+                type="text"
+                placeholder="Calidosos F.C."
+              />
+            </div>
+            <div style="flex:0 0 auto; align-self:center; text-align:center; font-weight:700;">
+              Vs
+            </div>
+            <div>
+              <label for="attendanceRivalName">Equipo rival</label>
+              <input
+                id="attendanceRivalName"
+                type="text"
+                placeholder="Rival F.C."
+              />
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label for="attendanceDate">Lista de asistencia a partido del día:</label>
+              <input id="attendanceDate" type="date" />
+            </div>
+          </div>
+
+          <p class="small">
+            Registra los jugadores por posición y luego presiona <strong>CREAR EQUIPOS</strong> para
+            distribuirlos automáticamente en las listas de Equipo A y B.
+          </p>
+        </div>
+
+        <div class="team-block">
+          <div class="position-title">PORTERÍA 🧤 (máx. 2)</div>
+          <div id="attendanceGKContainer"></div>
+          <button class="btn btn-secondary btn-block" id="btnAddGK">➕ Agregar portero</button>
+
+          <div class="position-title" style="margin-top:8px;">DEFENSA 🛡️ (máx. 6)</div>
+          <div id="attendanceDefContainer"></div>
+          <button class="btn btn-secondary btn-block" id="btnAddDef">➕ Agregar defensa</button>
+
+          <div class="position-title" style="margin-top:8px;">MEDIO CAMPO ⚽ (máx. 8)</div>
+          <div id="attendanceMidContainer"></div>
+          <button class="btn btn-secondary btn-block" id="btnAddMid">➕ Agregar medio</button>
+
+          <div class="position-title" style="margin-top:8px;">DELANTERA 🎯 (máx. 4)</div>
+          <div id="attendanceFwdContainer"></div>
+          <button class="btn btn-secondary btn-block" id="btnAddFwd">➕ Agregar delantero</button>
+
+          <p class="small" style="margin-top:8px;">
+            • <strong>Modo 10 jugadores:</strong> 1 portero, 3 defensas, 4 medios y 2 delanteros → todos al Equipo A.<br/>
+            • <strong>Modo 20 jugadores:</strong> 2 porteros, 6 defensas, 8 medios y 4 delanteros → se reparten en A y B.
+          </p>
+
+          <button class="btn btn-primary btn-block" id="btnCreateTeams">
+  ⚽ CREAR EQUIPOS
+</button>
+
+<div class="export-box">
+  <label for="exportAsistencia">Texto generado (WhatsApp):</label>
+  <textarea id="exportAsistencia"></textarea>
+  <button class="btn btn-primary btn-block" id="btnExportAsistencia">
+    📄 Generar texto de asistencia
+  </button>
+</div>
         </div>
       </div>
 
-      <div id="tabSueltas" class="tab-panel">
-  <div class="filters-row" style="margin-top: 0.25rem;">
-    <input
-      type="text"
-      id="searchSueltas"
-      class="search-input"
-      placeholder="Buscar por código o descripción (sueltas)"
-    />
+
+      <!-- TAB 1: EQUIPOS -->
+      <div id="tab-equipos" class="tab-content">
+        <!-- Encabezado -->
+        <div class="row">
+          <div>
+            <label for="matchHeader">
+              Encabezado del partido
+              <span class="emoji-toggle" data-target="headerEmojiPanel">😊</span>
+            </label>
+            <textarea id="matchHeader" placeholder="Ej: 🏟️  ℂ𝔸ℕℂℍ𝔸 𝔹𝕆𝕄𝔹𝕆ℕ𝔼ℝ𝔸 🏟️&#10;𝔽𝔼ℂℍ𝔸 : ..."></textarea>
+            <div id="headerEmojiPanel" class="emoji-panel"></div>
+          </div>
+        </div>
+
+        <!-- Nombres y camisetas -->
+        <div class="row">
+          <div>
+            <label for="teamAName">Nombre Equipo A</label>
+            <input id="teamAName" type="text" placeholder="Ej: Calidosos F.C" />
+            <div class="jersey-select">
+              <span>Camisa:</span>
+              <select id="teamAJersey">
+                <option value="🟥">🟥 Roja</option>
+                <option value="⬛">⬛ Negra</option>
+                <option value="⬜">⬜ Blanca</option>
+                <option value="🟦">🟦 Azul</option>
+                <option value="🟩">🟩 Verde</option>
+                <option value="🟨">🟨 Amarilla</option>
+              </select>
+            </div>
+          </div>
+          <div>
+            <label for="teamBName">Nombre Equipo B</label>
+            <input id="teamBName" type="text" placeholder="Ej: Rivales F.C" />
+            <div class="jersey-select">
+              <span>Camisa:</span>
+              <select id="teamBJersey">
+                <option value="🟥">🟥 Roja</option>
+                <option value="⬛">⬛ Negra</option>
+                <option value="⬜">⬜ Blanca</option>
+                <option value="🟦">🟦 Azul</option>
+                <option value="🟩">🟩 Verde</option>
+                <option value="🟨">🟨 Amarilla</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <p class="small">Máximo 10 jugadores por equipo (1 arquero + defensas, volantes y delanteros en el esquema que quieras).</p>
+
+        <!-- Equipo A -->
+        <div class="team-block">
+          <div class="team-title" id="teamATitle">
+            <span>👕</span><span>Equipo A</span><span>👕</span>
+          </div>
+
+          <details open>
+            <summary>Portero</summary>
+            <div id="teamAGKContainer"></div>
+          </details>
+
+          <details>
+            <summary>Defensas</summary>
+            <div id="teamADefContainer"></div>
+            <button class="btn btn-secondary btn-block" data-add-player="A-DEF">➕ Agregar defensa</button>
+          </details>
+
+          <details>
+            <summary>Volantes</summary>
+            <div id="teamAMidContainer"></div>
+            <button class="btn btn-secondary btn-block" data-add-player="A-MID">➕ Agregar volante</button>
+          </details>
+
+          <details>
+            <summary>Delanteros</summary>
+            <div id="teamAFwdContainer"></div>
+            <button class="btn btn-secondary btn-block" data-add-player="A-FWD">➕ Agregar delantero</button>
+          </details>
+        </div>
+
+        <!-- Equipo B -->
+        <div class="team-block">
+          <div class="team-title" id="teamBTitle">
+            <span>👕</span><span>Equipo B</span><span>👕</span>
+          </div>
+
+          <details open>
+            <summary>Portero</summary>
+            <div id="teamBGKContainer"></div>
+          </details>
+
+          <details>
+            <summary>Defensas</summary>
+            <div id="teamBDefContainer"></div>
+            <button class="btn btn-secondary btn-block" data-add-player="B-DEF">➕ Agregar defensa</button>
+          </details>
+
+          <details>
+            <summary>Volantes</summary>
+            <div id="teamBMidContainer"></div>
+            <button class="btn btn-secondary btn-block" data-add-player="B-MID">➕ Agregar volante</button>
+          </details>
+
+          <details>
+            <summary>Delanteros</summary>
+            <div id="teamBFwdContainer"></div>
+            <button class="btn btn-secondary btn-block" data-add-player="B-FWD">➕ Agregar delantero</button>
+          </details>
+        </div>
+
+        <!-- Reservas -->
+        <div class="team-block">
+          <div class="team-title">Reservas</div>
+          <p class="small">Jugadores que pueden reemplazar a cualquiera de los 20 oficiales.</p>
+          <div id="reservesContainer"></div>
+        </div>
+
+        <!-- Información adicional -->
+        <div class="team-block">
+          <label for="extraInfo">
+            Información adicional
+            <span class="emoji-toggle" data-target="extraEmojiPanel">😊</span>
+          </label>
+          <textarea id="extraInfo" placeholder="ℂ𝔸𝕄𝔹𝕀𝕆𝕊 ℝ𝕆𝕋𝔸𝕋𝕀𝕍𝕆𝕊...&#10;𝙴𝙽𝙲𝙰𝚁GADO: 𝐃𝐚𝐫𝐢𝐧𝐞𝐥 𝐅𝐚𝐥𝐜𝐨́𝐧&#10;..."></textarea>
+          <div id="extraEmojiPanel" class="emoji-panel"></div>
+        </div>
+
+        <!-- Botón generar alineaciones y cancha -->
+        <button class="btn btn-primary btn-block" id="btnExportEquipos">
+          📄 Generar texto de alineaciones
+        </button>
+
+        <button class="btn btn-secondary btn-block" id="btnGeneratePitch">
+          🏟️ Generar imagen de cancha (1-2-3-1)
+        </button>
+
+        <div class="export-box">
+          <label for="exportEquipos">Texto generado (WhatsApp):</label>
+          <textarea id="exportEquipos" readonly></textarea>
+        </div>
+
+        <canvas id="pitchCanvas" width="800" height="1200" style="display:none;"></canvas>
+      </div>
+
+      <!-- TAB 2: GOLES / DISCIPLINA -->
+      <div id="tab-goles" class="tab-content">
+        <!-- Cronómetro + logo -->
+        <div class="goals-header">
+          <div class="timer-controls">
+            <button id="btnTimerStart" class="btn btn-secondary">▶️ Iniciar</button>
+            <button id="btnTimerPause" class="btn btn-secondary">⏸️ Pausa</button>
+            <button id="btnTimerReset" class="btn btn-secondary">🔄 Reiniciar</button>
+          </div>
+          <div class="goals-logo">
+            <img src="calidosos-logo.png" alt="Logo" />
+          </div>
+          <div class="timer-display" id="timerDisplay">00:00:00</div>
+        </div>
+
+        <!-- 🔢 MARCADOR EN VIVO -->
+        <div class="scoreboard">
+          <div class="score-team-name" id="scoreTeamAName">Equipo A</div>
+          <div class="score-value">
+            <span id="scoreA">0</span>
+            <span>-</span>
+            <span id="scoreB">0</span>
+          </div>
+          <div class="score-team-name" id="scoreTeamBName">Equipo B</div>
+        </div>
+
+        <div class="goals-discipline-toggle">
+          <button class="subtab-button active" data-subtab="goles">Goles</button>
+          <button class="subtab-button" data-subtab="disciplina">Disciplina</button>
+        </div>
+
+        <!-- Subtab GOLES -->
+        <div id="subtab-goles" class="subtab-content" style="display:block;">
+          <div class="chip">
+            <span>Registro de goles</span>
+          </div>
+
+          <div class="row">
+            <div>
+              <label for="goalPlayerSelect">Jugador</label>
+              <select id="goalPlayerSelect"></select>
+            </div>
+            <div style="max-width:110px;">
+              <label for="goalMinuteInput">Minuto</label>
+              <input id="goalMinuteInput" type="number" min="0" max="200" placeholder="Ej: 23" />
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-block" id="btnAddGoal">
+            ➕ Registrar gol
+          </button>
+
+          <button class="btn btn-danger btn-block" id="btnClearGoals">
+            🗑️ Borrar todos los goles
+          </button>
+
+          <table id="goalsTable">
+            <thead>
+              <tr>
+                <th>Jugador</th>
+                <th>Goles</th>
+                <th>Minutos</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+
+          <button class="btn btn-primary btn-block" id="btnExportGoles">
+            📄 Generar texto de estadísticas
+          </button>
+
+          <div class="export-box">
+            <label for="exportGoles">Texto generado (WhatsApp):</label>
+            <textarea id="exportGoles" readonly></textarea>
+          </div>
+        </div>
+
+        <!-- Subtab DISCIPLINA -->
+        <div id="subtab-disciplina" class="subtab-content" style="display:none;">
+          <div class="chip">
+            <span>Tarjetas amarillas y rojas</span>
+          </div>
+
+          <div id="disciplineContainer"></div>
+
+          <button class="btn btn-primary btn-block" id="btnExportDisciplina">
+            📄 Incluir disciplina en texto de estadísticas
+          </button>
+        </div>
+      </div>
+
+      <!-- TAB 3: PAGOS -->
+      <div id="tab-pagos" class="tab-content">
+        <div class="chip">
+          <span>Control de pagos ($4.00 c/u)</span>
+        </div>
+
+        <table id="paymentsTable">
+          <thead>
+            <tr>
+              <th>Jugador</th>
+              <th>Pagado ($)</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+
+        <div class="total-money" id="totalMoney"></div>
+
+        <button class="btn btn-primary btn-block" id="btnExportPagos">
+          📄 Generar texto de pagos
+        </button>
+
+        <div class="export-box">
+          <label for="exportPagos">Texto generado (WhatsApp):</label>
+          <textarea id="exportPagos" readonly></textarea>
+        </div>
+      </div>
+    </div>
   </div>
 
-  <div class="table-wrapper">
-    <table>
-      <thead>
-        <tr>
-          <th>Código</th>
-          <th>Descripción</th>
-          <th>Unid. sueltas</th>
-          <th>Estado</th>
-        </tr>
-      </thead>
-      <tbody id="tbodySueltas"></tbody>
-    </table>
-  </div>
-</div>
-
-<div id="tabResumen" class="tab-panel">
-
-    <h2>Resumen Ejecutivo</h2>
-
-    <div style="margin-bottom: 1rem;">
-        <input 
-            type="password" 
-            id="passResumen" 
-            placeholder="Contraseña Resumen Ejecutivo" 
-            style="padding: 6px; width: 220px;"
-        />
-        <button id="btnAccederResumen" class="btn-primary" type="button">
-            Acceder
-        </button>
-    </div>
-
-    <section id="resumenEjecutivo" style="display:none;"></section>
-
-    <div style="margin-top: 1rem; text-align: right;">
-        <button
-            id="btnExportResumen"
-            class="btn-primary"
-            type="button"
-        >
-            Exportar resumen a Excel
-        </button>
-    </div>
-</div>
-
-  <!-- Librería Excel -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-
- 
   <script>
-    // ---------- CONFIGURACIÓN SAGE ----------
+    // ==========================
+    // CONFIG GENERAL
+    // ==========================
+    const APP_STORAGE_KEY = "calidosos_app_partido_v3";
+    const PAYMENT_TOTAL = 4.00;
 
-    const passwordResumen = "RM2025";
+        const HEADER_EMOJIS = [
+      "🏟️","📅","🐻","⚽","🥅","🔥","📍","⏰","📋",
+      "0️⃣","1️⃣","2️⃣","3️⃣","4️⃣","5️⃣","6️⃣","7️⃣","8️⃣","9️⃣",
+      "💰","👀","↪","⇢","➤","⭐","🕒","🏃‍♂","💨"
+    ];
 
-    document
-      .getElementById("btnAccederResumen")
-      .addEventListener("click", () => {
-        const passIngresada = document
-          .getElementById("passResumen")
-          .value.trim();
+    const EXTRA_EMOJIS = [
+      "⚽","🥅","🏟️","🕒","💰","👀","📢","✅","❌",
+      "😊","😎","📅","⏰","↪","⬅️","➡️","⬆️","⬇️"
+    ];
 
-        if (passIngresada === passwordResumen) {
-          document.getElementById("resumenEjecutivo").style.display = "block";
-          alert("Acceso concedido al Resumen Ejecutivo.");
-        } else {
-          alert("Contraseña incorrecta.");
-        }
-      });
+    const DEFAULT_HEADER = `🏟️  ℂ𝔸ℕℂℍ𝔸 𝔹𝕆𝕄𝔹𝕆ℕ𝔼ℝ𝔸 🏟️
+𝔽𝔼ℂℍ𝔸 : ...`;
 
-    const SAGE_CONFIG = {
-      colCodigo: "Item ID",
-      colDescripcion: "Description for Sales",
-      colUnidad: "Stocking U/M",
-      colMarca: "Item Type",
-      colSistema: "Qty on Hand",
-      colCuentaFisica: "Cuenta Fisica",
-      colDiferencia: "Diferencia",
-      colCosto: "Last Unit Cost",
-      colEspecialidad: "Location",
+    const DEFAULT_EXTRA_INFO = `👉 CAMBIOS ROTATIVOS 👈
+🕒 {Cada 7 Minutos} 🕒
+
+ENCARGADO: Darinel Falcón
+PRECIO: 4.00 💰
+*_____________________________*
+
+POSDATA: 🧠
+Jugador que no asiste al partido y no justifica su ausencia con tiempo tiene que pagar su parte de la cancha ESE MISMO DÍA, NO DOS NI TRES DÍAS DESPUÉS. 👀
+
+(DE NO IR AVISAR MÍNIMO 8️⃣ HORAS ANTES DEL PARTIDO)
+
+PARTIDO AMISTOSO
+🏟️⚽🏃‍♂️🔥
+*_____________________________*`;
+
+    function defaultListState() {
+      return {
+        header: "",
+        extraInfo: DEFAULT_EXTRA_INFO,
+        teamAName: "",
+        teamBName: "",
+        teamAJersey: "🟥",
+        teamBJersey: "🟦",
+        nextPlayerId: 1,
+        teamAPlayers: [],
+        teamBPlayers: [],
+        reserves: ["","","","",""],
+        goals: {},
+        cards: {},
+        payments: {},
+        timerMs: 0,
+        timerRunning: false,
+
+        // 🔹 Asistencia
+        attendanceLocalName: "",
+        attendanceRivalName: "",
+        attendanceDate: "",
+        attendanceNextId: 1,
+        attendanceGKs: [],
+        attendanceDefs: [],
+        attendanceMids: [],
+        attendanceFwds: []
+      };
+    }
+
+    let appState = {
+      currentListIndex: 0,
+      lists: [defaultListState(), defaultListState(), defaultListState()]
     };
 
-    const SAGE_PATTERNS = {
-      colCodigo: ["item id", "codigo", "code"],
-      colDescripcion: ["description for sales", "description", "descripcion"],
-      colUnidad: ["stocking", "u/m", "unidad"],
-      colMarca: ["item type", "marca", "brand"],
-      colSistema: ["qty on hand", "existencia"],
-      colCuentaFisica: ["cuenta fisica", "conteo fisico", "physical count"],
-      colDiferencia: ["diferencia", "difference", "variance"],
-      colCosto: ["last unit cost", "unit cost", "ultimo costo"],
-      colEspecialidad: ["location", "locacion", "ubicacion"],
-    };
+    function currentState() {
+      return appState.lists[appState.currentListIndex];
+    }
 
-    const SUPERVISOR_PIN = "2025"; // 🔁 Cambia la clave si deseas
+    function saveAppState() {
+      localStorage.setItem(APP_STORAGE_KEY, JSON.stringify(appState));
+    }
 
-    // Estado global
-    let H = {};
-    let sageHeaders = [];
-    let sageRows = [];              // filas originales Sage (como objetos)
-    let inventoryCajas = [];        // lo que ves en la tabla
-    let sageIndexByCodigo = new Map(); // código -> índice en sageRows
+    function loadAppState() {
+      const raw = localStorage.getItem(APP_STORAGE_KEY);
 
-    // ---------- Normalizador de encabezados ----------
-    function normalizeHeader(h) {
+      if (!raw) {
+        appState.lists.forEach(list => {
+          list.teamAPlayers.push({
+            id: list.nextPlayerId++,
+            role: "GK",
+            name: "",
+            pos: "ARQUERO"
+          });
+          list.teamBPlayers.push({
+            id: list.nextPlayerId++,
+            role: "GK",
+            name: "",
+            pos: "ARQUERO"
+          });
+
+          list.attendanceLocalName = "";
+          list.attendanceRivalName = "";
+          list.attendanceDate = "";
+          list.attendanceNextId = 1;
+          list.attendanceGKs = [];
+          list.attendanceDefs = [];
+          list.attendanceMids = [];
+          list.attendanceFwds = [];
+        });
+        return;
+      }
+
+      try {
+        const data = JSON.parse(raw);
+        appState.currentListIndex = data.currentListIndex || 0;
+        appState.lists =
+          data.lists || [defaultListState(), defaultListState(), defaultListState()];
+
+        appState.lists.forEach(list => {
+          if (!Array.isArray(list.teamAPlayers)) list.teamAPlayers = [];
+          if (!Array.isArray(list.teamBPlayers)) list.teamBPlayers = [];
+          if (!Array.isArray(list.reserves) || list.reserves.length !== 5) {
+            list.reserves = ["", "", "", "", ""];
+          }
+          if (!list.nextPlayerId) list.nextPlayerId = 1;
+
+          if (!list.teamAPlayers.some(p => p.role === "GK")) {
+            list.teamAPlayers.unshift({
+              id: list.nextPlayerId++,
+              role: "GK",
+              name: "",
+              pos: "ARQUERO"
+            });
+          }
+          if (!list.teamBPlayers.some(p => p.role === "GK")) {
+            list.teamBPlayers.unshift({
+              id: list.nextPlayerId++,
+              role: "GK",
+              name: "",
+              pos: "ARQUERO"
+            });
+          }
+
+          if (!list.cards) list.cards = {};
+          if (!list.payments) list.payments = {};
+          if (!list.goals) list.goals = {};
+
+          if (!("attendanceLocalName" in list)) list.attendanceLocalName = "";
+          if (!("attendanceRivalName" in list)) list.attendanceRivalName = "";
+          if (!("attendanceDate" in list)) list.attendanceDate = "";
+          if (!("attendanceNextId" in list)) list.attendanceNextId = 1;
+          if (!Array.isArray(list.attendanceGKs)) list.attendanceGKs = [];
+          if (!Array.isArray(list.attendanceDefs)) list.attendanceDefs = [];
+          if (!Array.isArray(list.attendanceMids)) list.attendanceMids = [];
+          if (!Array.isArray(list.attendanceFwds)) list.attendanceFwds = [];
+        });
+      } catch (e) {
+        console.error("Error loading app state:", e);
+      }
+    }
+
+    function decorated(text) {
+      return text;
+    }
+
+    let timerInterval = null;
+
+    function formatTimer(ms) {
+      const totalHund = Math.floor(ms / 10);
+      const min = Math.floor(totalHund / 6000);
+      const sec = Math.floor((totalHund % 6000) / 100);
+      const hund = totalHund % 100;
       return (
-        String(h || "")
-          .normalize("NFD")
-          .replace(/[\u0300-\u036f]/g, "") // quita tildes
-          .replace(/[\[\]\(\):]/g, " ")
-          .replace(/\s+/g, " ")
-          .trim()
-          .toLowerCase() || String(h || "")
+        min.toString().padStart(2,"0") + ":" +
+        sec.toString().padStart(2,"0") + ":" +
+        hund.toString().padStart(2,"0")
       );
     }
+// ========= FUNCIONES PARA TEXTO DE ASISTENCIA =========
 
-   // ---------- Splash con mensajes secuenciales ----------
-const splash = document.getElementById("splash");
-const splashText = document.getElementById("splash-text");
-const dotsSpan = document.getElementById("dots");
-const app = document.getElementById("app");
+function numeroAEmojis(num) {
+  const mapa = {
+    "0": "0️⃣", "1": "1️⃣", "2": "2️⃣", "3": "3️⃣", "4": "4️⃣",
+    "5": "5️⃣", "6": "6️⃣", "7": "7️⃣", "8": "8️⃣", "9": "9️⃣",
+  };
 
-// Animación de puntos "..."
-let dotCount = 1;
-const dotsInterval = setInterval(() => {
-  dotCount = (dotCount % 3) + 1;
-  dotsSpan.textContent = ".".repeat(dotCount);
-}, 500);
-
-// Mensajes secuenciales
-const mensajes = [
-  "Preparando módulos",
-  "Inicializando interfaz",
-  "Cargando elementos"
-];
-
-let paso = 0;
-
-function cambiarMensaje() {
-  splashText.childNodes[0].textContent = mensajes[paso];
-  paso++;
-
-  if (paso < mensajes.length) {
-    setTimeout(cambiarMensaje, 1500); // 1.5s por mensaje
-  } else {
-    // último mensaje → cerrar splash
-    setTimeout(() => {
-      clearInterval(dotsInterval);
-      splash.style.opacity = "0";
-      setTimeout(() => {
-        splash.style.display = "none";
-        app.style.display = "block";
-      }, 400);
-    }, 1500);
-  }
+  return num
+    .toString()
+    .split("")
+    .map(d => mapa[d] || d)
+    .join(" ");
 }
 
-// iniciar secuencia
-setTimeout(cambiarMensaje, 300); 
+function formatearFechaConEmojis(fechaStr) {
+  if (!fechaStr) return "Sin fecha";
 
-    // ---------- Tabs ----------
-    const tabButtons = document.querySelectorAll(".tab-btn");
-    const tabPanels = document.querySelectorAll(".tab-panel");
-    tabButtons.forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const target = btn.dataset.tab;
-        tabButtons.forEach((b) => b.classList.remove("active"));
-        tabPanels.forEach((p) => p.classList.remove("active"));
-        btn.classList.add("active");
-        document.getElementById(target).classList.add("active");
-      });
-    });
+  let date;
 
-    // ---------- DOM ----------
-    const btnLoadExcel = document.getElementById("btnLoadExcel");
-    const btnReset = document.getElementById("btnReset");
-    const btnExportExcel = document.getElementById("btnExportExcel");
-    const btnExportResumen = document.getElementById("btnExportResumen");
-    const excelInput = document.getElementById("excelInput");
-    const tbodyCajas = document.getElementById("tbodyCajas");
-    const tbodySueltas = document.getElementById("tbodySueltas");
-    const searchCajas = document.getElementById("searchCajas");
-    const searchSueltas = document.getElementById("searchSueltas");
-    const filterMarca = document.getElementById("filterMarca");
-    const filterEsp = document.getElementById("filterEsp");
-    const dateFrom = document.getElementById("dateFrom");
-    const dateTo = document.getElementById("dateTo");
+  if (fechaStr.includes("-")) {
+    const [year, month, day] = fechaStr.split("-");
+    date = new Date(year, month - 1, day);
+  } else if (fechaStr.includes("/")) {
+    const [month, day, year] = fechaStr.split("/");
+    date = new Date(year, month - 1, day);
+  } else {
+    return fechaStr;
+  }
 
-    // Fechas por defecto (1er día del mes a hoy)
-    const today = new Date();
-    const yyyy = today.getFullYear();
-    const mm = String(today.getMonth() + 1).padStart(2, "0");
-    const dd = String(today.getDate()).padStart(2, "0");
-    dateTo.value = `${yyyy}-${mm}-${dd}`;
-    dateFrom.value = `${yyyy}-${mm}-01`;
+  const dias = [
+    "Domingo","Lunes","Martes","Miércoles",
+    "Jueves","Viernes","Sábado"
+  ];
+  const meses = [
+    "Enero","Febrero","Marzo","Abril","Mayo","Junio",
+    "Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"
+  ];
 
-    // ---------- Buscar fila de encabezados ----------
-    function findHeaderRowIndex(aoa) {
-      let bestIndex = 0;
-      let bestScore = -1;
+  const diaSemana = dias[date.getDay()];
+  const diaNum = date.getDate();
+  const mesNombre = meses[date.getMonth()];
+  const diaEmoji = numeroAEmojis(diaNum);
 
-      for (let i = 0; i < aoa.length; i++) {
-        const row = aoa[i];
-        const cells = row.map((c) => normalizeHeader(c));
-        let score = 0;
+  return `${diaSemana} ${diaEmoji} de ${mesNombre}`;
+}
 
-        for (const patterns of Object.values(SAGE_PATTERNS)) {
-          for (const cell of cells) {
-            for (const p of patterns) {
-              if (p && cell.includes(p)) {
-                score++;
-                break;
-              }
-            }
-          }
-        }
-        if (score > bestScore) {
-          bestScore = score;
-          bestIndex = i;
-        }
-      }
-      return bestIndex;
-    }
+function crearLineaJugadorListado(numero, nombre, rol) {
+  if (!rol) rol = "";
+  const limpio = (nombre || "").trim();
+  if (!limpio) {
+    return `${numero}. __________ ${rol}`.trim();
+  }
+  return `${numero}. ${limpio} ${rol}`.trim();
+}
 
-    // ---------- Resolver columnas por nombre ----------
-    function resolveSageColumns() {
-      H = {};
-      const normMap = {};
-      sageHeaders.forEach((h) => {
-        normMap[h] = normalizeHeader(h);
-      });
+function crearEncabezadoAsistenciaDesdeState(st) {
+  const nombreEstadio = "CANCHA BOMBONERA";
+  const nombreEspaciado = nombreEstadio.split("").join(" ");
+  const emojiEstadio = "🏟️";
 
-      Object.entries(SAGE_PATTERNS).forEach(([key, patterns]) => {
-        let foundOriginal = null;
+  const fechaStr = st.attendanceDate || "";
+  const fechaFormateada = formatearFechaConEmojis(fechaStr);
 
-        outer: for (const [original, norm] of Object.entries(normMap)) {
-          for (const pattern of patterns) {
-            if (pattern && norm.includes(pattern)) {
-              foundOriginal = original;
-              break outer;
-            }
-          }
-        }
-        H[key] = foundOriginal || null;
-      });
+  const rival = (st.attendanceRivalName || "RIVAL").toUpperCase();
 
-      const criticalKeys = [
-        "colCodigo",
-        "colDescripcion",
-        "colUnidad",
-        "colMarca",
-        "colSistema",
-      ];
-      const missingCritical = [];
-      criticalKeys.forEach((key) => {
-        if (!H[key]) {
-          missingCritical.push(SAGE_CONFIG[key] || key);
-        }
-      });
+  let encabezado = "";
+  encabezado += `${emojiEstadio} ${nombreEspaciado} ${emojiEstadio}\n\n`;
+  encabezado += `FECHA : ↩ ${fechaFormateada} 🗓️\n`;
+  encabezado += `HORA  : ↩ __ Pm ⏰\n`; // el usuario luego escribe la hora real
+  encabezado += `RIVAL : ${rival}\n\n`;
 
-      if (missingCritical.length) {
-        alert(
-          "Atención: faltan columnas CRÍTICAS en el Excel:\n\n" +
-            missingCritical.join("\n") +
-            "\n\nLa tabla puede quedar incompleta. Revisa el archivo."
-        );
-      }
-    }
+  return encabezado;
+}
 
-    // ---------- Botón cargar ----------
-    btnLoadExcel.addEventListener("click", () => {
-      excelInput.click();
-    });
+function generarListadoAsistenciaDesdeState(st) {
+  const gks = st.attendanceGKs || [];
+  const defs = st.attendanceDefs || [];
+  const mids = st.attendanceMids || [];
+  const fwds = st.attendanceFwds || [];
 
-    excelInput.addEventListener("change", (event) => {
-      const file = event.target.files[0];
-      if (!file) return;
+  let lineas = [];
+  let num = 1;
 
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const data = new Uint8Array(e.target.result);
-        const workbook = XLSX.read(data, { type: "array" });
-        const firstSheetName = workbook.SheetNames[0];
-        const sheet = workbook.Sheets[firstSheetName];
+  lineas.push("LISTADO ✍️", "", "ARQUERO 🧤");
 
-        const aoa = XLSX.utils.sheet_to_json(sheet, {
-          header: 1,
-          defval: "",
+  // PORTEROS (todos con ARQUERO 🧤)
+  gks.forEach(p => {
+    lineas.push(crearLineaJugadorListado(num, p.name, "ARQUERO"));
+    num++;
+  });
+  lineas.push("");
+
+  // DEFENSAS
+  const rolesDefsBase = ["CENTRAL IZQ.", "CENTRAL", "CENTRAL DER."];
+  lineas.push("DEFENSAS 🛡️");
+  defs.forEach((p, idx) => {
+    const rol = rolesDefsBase[idx] || "CENTRAL"; // extras usan CENTRAL
+    lineas.push(crearLineaJugadorListado(num, p.name, rol));
+    num++;
+  });
+  lineas.push("");
+
+  // VOLANTES / MEDIOS
+  const rolesMidsBase = ["MEDIO CENTRO", "MEDIO CENTRO", "EXTREMO IZQ.", "EXTREMO DER."];
+  lineas.push("VOLANTES ⚙️");
+  mids.forEach((p, idx) => {
+    const rol = rolesMidsBase[idx] || "MEDIO";
+    lineas.push(crearLineaJugadorListado(num, p.name, rol));
+    num++;
+  });
+  lineas.push("");
+
+  // DELANTEROS
+  const rolesFwdsBase = ["PUNTERO", "PUNTERO"];
+  lineas.push("DELANTEROS 🎯");
+  fwds.forEach((p, idx) => {
+    const rol = rolesFwdsBase[idx] || "PUNTERO";
+    lineas.push(crearLineaJugadorListado(num, p.name, rol));
+    num++;
+  });
+  lineas.push("");
+
+  return lineas.join("\n");
+}
+
+function generarBloqueCambiosRotativos() {
+  return [
+    "👉 CAMBIOS ROTATIVOS 👈",
+    "🕒 {Cada 7 Minutos} 🕒",
+    "",
+    "ENCARGADO: Darinel Falcón",
+    "PRECIO: 4.00 💰",
+    "*_____________________________*",
+    "",
+    "POSDATA: 🧠",
+    "Jugador que no asiste al partido y no justifica su ausencia con tiempo tiene que pagar su parte de la cancha ESE MISMO DÍA, NO DOS NI TRES DÍAS DESPUÉS. 👀",
+    "",
+    "(DE NO IR AVISAR MÍNIMO 8️⃣ HORAS ANTES DEL PARTIDO)",
+    "",
+    "PARTIDO AMISTOSO",
+    "🏟️⚽🏃‍♂️🔥",
+    "*_____________________________*",
+  ].join("\n");
+}
+
+function generarTextoAsistenciaCompleto(st) {
+  let texto = "";
+  texto += crearEncabezadoAsistenciaDesdeState(st);
+  texto += generarListadoAsistenciaDesdeState(st);
+  texto += "\n" + generarBloqueCambiosRotativos();
+  return texto;
+}
+
+    document.addEventListener("DOMContentLoaded", () => {
+      loadAppState();
+
+      const listButtons = document.querySelectorAll(".list-button");
+      const tabButtons = document.querySelectorAll(".tab-button");
+      const tabContents = document.querySelectorAll(".tab-content");
+      const btnResetMatch = document.getElementById("btnResetMatch");
+
+      const matchHeader = document.getElementById("matchHeader");
+      const extraInfo = document.getElementById("extraInfo");
+      const headerEmojiPanel = document.getElementById("headerEmojiPanel");
+      const extraEmojiPanel = document.getElementById("extraEmojiPanel");
+
+      const teamANameInput = document.getElementById("teamAName");
+      const teamBNameInput = document.getElementById("teamBName");
+      const teamAJerseySelect = document.getElementById("teamAJersey");
+      const teamBJerseySelect = document.getElementById("teamBJersey");
+      const teamATitle = document.getElementById("teamATitle");
+      const teamBTitle = document.getElementById("teamBTitle");
+
+      const attendanceLocalNameInput = document.getElementById("attendanceLocalName");
+      const attendanceRivalNameInput = document.getElementById("attendanceRivalName");
+      const attendanceDateInput = document.getElementById("attendanceDate");
+
+      const attendanceGKContainer = document.getElementById("attendanceGKContainer");
+      const attendanceDefContainer = document.getElementById("attendanceDefContainer");
+      const attendanceMidContainer = document.getElementById("attendanceMidContainer");
+      const attendanceFwdContainer = document.getElementById("attendanceFwdContainer");
+
+      const btnAddGK = document.getElementById("btnAddGK");
+      const btnAddDef = document.getElementById("btnAddDef");
+      const btnAddMid = document.getElementById("btnAddMid");
+      const btnAddFwd = document.getElementById("btnAddFwd");
+      const btnCreateTeams = document.getElementById("btnCreateTeams");
+      const btnExportAsistencia = document.getElementById("btnExportAsistencia");
+      const exportAsistencia = document.getElementById("exportAsistencia");
+
+
+      const teamAGKContainer = document.getElementById("teamAGKContainer");
+      const teamADefContainer = document.getElementById("teamADefContainer");
+      const teamAMidContainer = document.getElementById("teamAMidContainer");
+      const teamAFwdContainer = document.getElementById("teamAFwdContainer");
+
+      const teamBGKContainer = document.getElementById("teamBGKContainer");
+      const teamBDefContainer = document.getElementById("teamBDefContainer");
+      const teamBMidContainer = document.getElementById("teamBMidContainer");
+      const teamBFwdContainer = document.getElementById("teamBFwdContainer");
+
+      const reservesContainer = document.getElementById("reservesContainer");
+
+      const goalPlayerSelect = document.getElementById("goalPlayerSelect");
+      const goalMinuteInput = document.getElementById("goalMinuteInput");
+      const btnAddGoal = document.getElementById("btnAddGoal");
+      const btnClearGoals = document.getElementById("btnClearGoals");
+      const goalsTableBody = document.querySelector("#goalsTable tbody");
+
+      const paymentsTableBody = document.querySelector("#paymentsTable tbody");
+      const totalMoney = document.getElementById("totalMoney");
+
+      const btnExportEquipos = document.getElementById("btnExportEquipos");
+      const exportEquipos = document.getElementById("exportEquipos");
+
+      const btnGeneratePitch = document.getElementById("btnGeneratePitch");
+      const pitchCanvas = document.getElementById("pitchCanvas");
+
+      const btnExportGoles = document.getElementById("btnExportGoles");
+      const exportGoles = document.getElementById("exportGoles");
+
+      const btnExportPagos = document.getElementById("btnExportPagos");
+      const exportPagos = document.getElementById("exportPagos");
+
+      const timerDisplay = document.getElementById("timerDisplay");
+      const btnTimerStart = document.getElementById("btnTimerStart");
+      const btnTimerPause = document.getElementById("btnTimerPause");
+      const btnTimerReset = document.getElementById("btnTimerReset");
+
+      const subtabButtons = document.querySelectorAll(".subtab-button");
+      const subtabGoles = document.getElementById("subtab-goles");
+      const subtabDisciplina = document.getElementById("subtab-disciplina");
+      const disciplineContainer = document.getElementById("disciplineContainer");
+      const btnExportDisciplina = document.getElementById("btnExportDisciplina");
+
+      const goalSound = document.getElementById("goalSound");
+
+      // Marcador
+      const scoreTeamANameEl = document.getElementById("scoreTeamAName");
+      const scoreTeamBNameEl = document.getElementById("scoreTeamBName");
+      const scoreAEl = document.getElementById("scoreA");
+      const scoreBEl = document.getElementById("scoreB");
+
+      // EMOJIS
+      document.querySelectorAll(".emoji-toggle").forEach(span => {
+        span.addEventListener("click", () => {
+          const targetId = span.getAttribute("data-target");
+          const panel = document.getElementById(targetId);
+          panel.style.display = (panel.style.display === "flex") ? "none" : "flex";
         });
-        if (!aoa.length) {
-          alert("El archivo está vacío.");
+      });
+
+      function fillEmojiPanel(panel, emojis, targetTextarea) {
+        panel.innerHTML = "";
+        emojis.forEach(em => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "emoji-btn";
+          btn.textContent = em;
+          btn.addEventListener("click", () => {
+            targetTextarea.value += em;
+            targetTextarea.dispatchEvent(new Event("input"));
+          });
+          panel.appendChild(btn);
+        });
+      }
+
+      fillEmojiPanel(headerEmojiPanel, HEADER_EMOJIS, matchHeader);
+      fillEmojiPanel(extraEmojiPanel, EXTRA_EMOJIS, extraInfo);
+
+      // HELPERS
+      function getTeamPlayers(team) {
+        const st = currentState();
+        return team === "A" ? st.teamAPlayers : st.teamBPlayers;
+      }
+
+      function setTeamPlayers(team, arr) {
+        const st = currentState();
+        if (team === "A") st.teamAPlayers = arr;
+        else st.teamBPlayers = arr;
+      }
+
+      function totalPlayers(team) {
+        return getTeamPlayers(team).length;
+      }
+
+      function ensureGK(team) {
+        const st = currentState();
+        const players = getTeamPlayers(team);
+        if (!players.some(p=>p.role==="GK")) {
+          players.unshift({id: st.nextPlayerId++, role:"GK", name:"", pos:"ARQUERO"});
+        }
+      }
+
+      // Reinicia todo lo relacionado al partido de la lista actual
+      function resetCurrentMatchState() {
+        const st = currentState();
+
+        // Detener cronómetro
+        clearInterval(timerInterval);
+        timerInterval = null;
+        st.timerRunning = false;
+        st.timerMs = 0;
+
+        // Limpiar equipos y volver a crear arqueros vacíos
+        st.teamAPlayers = [];
+        st.teamBPlayers = [];
+        ensureGK("A");
+        ensureGK("B");
+
+        // Limpiar reservas
+        st.reserves = ["", "", "", "", ""];
+
+        // Limpiar goles, tarjetas y pagos
+        st.goals = {};
+        st.cards = {};
+        st.payments = {};
+
+        // Limpiar asistencia (pantalla de Asistencia)
+        st.attendanceLocalName = "";
+        st.attendanceRivalName = "";
+        st.attendanceDate = "";
+        st.attendanceNextId = 1;
+        st.attendanceGKs = [];
+        st.attendanceDefs = [];
+        st.attendanceMids = [];
+        st.attendanceFwds = [];
+
+        // Limpiar textos generados
+        exportAsistencia.value = "";
+        exportEquipos.value = "";
+        exportGoles.value = "";
+        exportPagos.value = "";
+
+        saveAppState();
+        hydrateUIFromState();
+        updateTimerDisplay();
+      }
+
+      function allPlayersFlat() {
+        const st = currentState();
+        const list = [];
+        const orderRoles = ["GK","DEF","MID","FWD"];
+        ["A","B"].forEach(team => {
+          const players = getTeamPlayers(team);
+          orderRoles.forEach(role => {
+            players.filter(p=>p.role===role).forEach(p=>{
+              list.push({team, ...p});
+            });
+          });
+        });
+        return list;
+      }
+
+      function createPlayerRow(player, team, container) {
+        const st = currentState();
+        const row = document.createElement("div");
+        row.className = "player-row";
+
+        const nameInput = document.createElement("input");
+        nameInput.type = "text";
+        nameInput.placeholder = "Nombre";
+        nameInput.value = player.name || "";
+        nameInput.className = "player-row-name";
+        nameInput.addEventListener("input", () => {
+          player.name = nameInput.value;
+          saveAppState();
+          rebuildGoalPlayerOptions();
+          buildPaymentsTable();
+          renderDiscipline();
+        });
+
+        const posInput = document.createElement("input");
+        posInput.type = "text";
+        posInput.placeholder = "Posición (CENTRAL, PUNTERO...)";
+        posInput.value = player.pos || "";
+        posInput.className = "player-row-pos";
+        posInput.addEventListener("input", () => {
+          player.pos = posInput.value;
+          saveAppState();
+        });
+
+        const delBtn = document.createElement("button");
+        delBtn.type = "button";
+        delBtn.textContent = "✖";
+        delBtn.title = "Eliminar";
+        delBtn.className = "btn btn-danger";
+        delBtn.style.padding = "2px 6px";
+        delBtn.style.fontSize = "0.7rem";
+
+        delBtn.addEventListener("click", () => {
+          const arr = getTeamPlayers(team);
+          if (player.role === "GK" && arr.filter(p=>p.role==="GK").length <= 1) {
+            alert("Debe haber al menos un arquero.");
+            return;
+          }
+          setTeamPlayers(team, arr.filter(p=>p.id !== player.id));
+          delete st.goals[player.id];
+          delete st.payments[player.id];
+          delete st.cards[player.id];
+          saveAppState();
+          renderTeamsUI();
+          rebuildGoalPlayerOptions();
+          renderGoalsTable();
+          buildPaymentsTable();
+          renderDiscipline();
+        });
+
+        row.appendChild(nameInput);
+        row.appendChild(posInput);
+        row.appendChild(delBtn);
+        container.appendChild(row);
+      }
+
+      function updateScoreboard() {
+        const st = currentState();
+        const players = allPlayersFlat();
+        let goalsA = 0;
+        let goalsB = 0;
+
+        Object.entries(st.goals || {}).forEach(([id, minutes]) => {
+          const p = players.find(pl => pl.id === parseInt(id,10));
+          if (!p || !Array.isArray(minutes)) return;
+          const g = minutes.length;
+          if (p.team === "A") goalsA += g;
+          else if (p.team === "B") goalsB += g;
+        });
+
+        scoreAEl.textContent = goalsA;
+        scoreBEl.textContent = goalsB;
+
+        const nameA = st.teamAName || "Equipo A";
+        const nameB = st.teamBName || "Equipo B";
+        scoreTeamANameEl.textContent = nameA;
+        scoreTeamBNameEl.textContent = nameB;
+      }
+
+      function updateTeamTitles() {
+        const st = currentState();
+        const nameA = st.teamAName || "Equipo A";
+        const nameB = st.teamBName || "Equipo B";
+        teamATitle.innerHTML = `<span>${st.teamAJersey}</span><span>${decorated(nameA)}</span><span>${st.teamAJersey}</span>`;
+        teamBTitle.innerHTML = `<span>${st.teamBJersey}</span><span>${decorated(nameB)}</span><span>${st.teamBJersey}</span>`;
+        updateScoreboard();
+      }
+
+      function renderTeamsUI() {
+        const st = currentState();
+
+        // 🔐 Asegurar siempre un portero por equipo (corrige línea muerta del B en modo 10)
+        ensureGK("A");
+        ensureGK("B");
+
+        teamAGKContainer.innerHTML = "";
+        teamADefContainer.innerHTML = "";
+        teamAMidContainer.innerHTML = "";
+        teamAFwdContainer.innerHTML = "";
+        teamBGKContainer.innerHTML = "";
+        teamBDefContainer.innerHTML = "";
+        teamBMidContainer.innerHTML = "";
+        teamBFwdContainer.innerHTML = "";
+        reservesContainer.innerHTML = "";
+
+        const tA = st.teamAPlayers;
+        const tB = st.teamBPlayers;
+
+        tA.filter(p=>p.role==="GK").forEach(p=>createPlayerRow(p,"A",teamAGKContainer));
+        tA.filter(p=>p.role==="DEF").forEach(p=>createPlayerRow(p,"A",teamADefContainer));
+        tA.filter(p=>p.role==="MID").forEach(p=>createPlayerRow(p,"A",teamAMidContainer));
+        tA.filter(p=>p.role==="FWD").forEach(p=>createPlayerRow(p,"A",teamAFwdContainer));
+
+        tB.filter(p=>p.role==="GK").forEach(p=>createPlayerRow(p,"B",teamBGKContainer));
+        tB.filter(p=>p.role==="DEF").forEach(p=>createPlayerRow(p,"B",teamBDefContainer));
+        tB.filter(p=>p.role==="MID").forEach(p=>createPlayerRow(p,"B",teamBMidContainer));
+        tB.filter(p=>p.role==="FWD").forEach(p=>createPlayerRow(p,"B",teamBFwdContainer));
+
+        st.reserves.forEach((val, idx) => {
+          const row = document.createElement("div");
+          row.className = "player-row";
+          const input = document.createElement("input");
+          input.type = "text";
+          input.placeholder = `Reserva ${idx+1}`;
+          input.value = val || "";
+          input.style.flex = "1";
+          input.addEventListener("input", () => {
+            st.reserves[idx] = input.value;
+            saveAppState();
+          });
+          row.appendChild(input);
+          reservesContainer.appendChild(row);
+        });
+
+        updateTeamTitles();
+      }
+
+      function renderAttendance() {
+        const st = currentState();
+
+        function renderSection(key, container) {
+          container.innerHTML = "";
+          const list = st[key] || [];
+
+          list.forEach(player => {
+            const row = document.createElement("div");
+            row.className = "player-row";
+
+            const input = document.createElement("input");
+            input.type = "text";
+            input.placeholder = "Nombre del jugador";
+            input.value = player.name || "";
+            input.style.flex = "1";
+            input.addEventListener("input", () => {
+              player.name = input.value;
+              saveAppState();
+            });
+
+            const delBtn = document.createElement("button");
+            delBtn.type = "button";
+            delBtn.textContent = "✖";
+            delBtn.className = "btn btn-danger";
+            delBtn.style.padding = "2px 6px";
+            delBtn.style.fontSize = "0.7rem";
+            delBtn.addEventListener("click", () => {
+              const arr = st[key] || [];
+              st[key] = arr.filter(p => p.id !== player.id);
+              saveAppState();
+              renderAttendance();
+            });
+
+            row.appendChild(input);
+            row.appendChild(delBtn);
+            container.appendChild(row);
+          });
+        }
+
+        renderSection("attendanceGKs", attendanceGKContainer);
+        renderSection("attendanceDefs", attendanceDefContainer);
+        renderSection("attendanceMids", attendanceMidContainer);
+        renderSection("attendanceFwds", attendanceFwdContainer);
+      }
+
+            function hydrateUIFromState() {
+        const st = currentState();
+
+        // Asegurar encabezado por defecto si está vacío
+        if (!st.header) {
+          st.header = DEFAULT_HEADER;
+        }
+        if (!st.extraInfo) {
+          st.extraInfo = DEFAULT_EXTRA_INFO;
+        }
+
+        matchHeader.value = st.header;
+        extraInfo.value = st.extraInfo;
+        teamANameInput.value = st.teamAName || "";
+        teamBNameInput.value = st.teamBName || "";
+        teamAJerseySelect.value = st.teamAJersey || "🟥";
+        teamBJerseySelect.value = st.teamBJersey || "🟦";
+      
+        attendanceLocalNameInput.value = st.attendanceLocalName || "";
+        attendanceRivalNameInput.value = st.attendanceRivalName || "";
+        attendanceDateInput.value = st.attendanceDate || "";
+        renderAttendance();
+
+        renderTeamsUI();
+        rebuildGoalPlayerOptions();
+        renderGoalsTable();
+        buildPaymentsTable();
+        renderDiscipline();
+        timerDisplay.textContent = formatTimer(st.timerMs || 0);
+        updateTeamTitles();
+        updateScoreboard();
+      }
+
+      // EVENTOS BÁSICOS
+      matchHeader.addEventListener("input", () => {
+        currentState().header = matchHeader.value;
+        saveAppState();
+      });
+
+      extraInfo.addEventListener("input", () => {
+        currentState().extraInfo = extraInfo.value;
+        saveAppState();
+      });
+
+      teamANameInput.addEventListener("input", () => {
+        currentState().teamAName = teamANameInput.value;
+        saveAppState();
+        updateTeamTitles();
+        rebuildGoalPlayerOptions();
+        buildPaymentsTable();
+        renderDiscipline();
+      });
+
+      teamBNameInput.addEventListener("input", () => {
+        currentState().teamBName = teamBNameInput.value;
+        saveAppState();
+        updateTeamTitles();
+        rebuildGoalPlayerOptions();
+        buildPaymentsTable();
+        renderDiscipline();
+      });
+
+      attendanceLocalNameInput.addEventListener("input", () => {
+  const st = currentState();
+  st.attendanceLocalName = attendanceLocalNameInput.value;
+
+  // Copiar también al nombre del Equipo A
+  st.teamAName = st.attendanceLocalName;
+  teamANameInput.value = st.teamAName;
+
+  saveAppState();
+  updateTeamTitles();
+  rebuildGoalPlayerOptions();
+  buildPaymentsTable();
+  renderDiscipline();
+});
+
+attendanceRivalNameInput.addEventListener("input", () => {
+  const st = currentState();
+  st.attendanceRivalName = attendanceRivalNameInput.value;
+
+  // Copiar también al nombre del Equipo B
+  st.teamBName = st.attendanceRivalName;
+  teamBNameInput.value = st.teamBName;
+
+  saveAppState();
+  updateTeamTitles();
+  rebuildGoalPlayerOptions();
+  buildPaymentsTable();
+  renderDiscipline();
+});
+attendanceDateInput.addEventListener("change", () => {
+  const st = currentState();
+  st.attendanceDate = attendanceDateInput.value;
+  saveAppState();
+
+  // Actualizar encabezado automáticamente
+  const headerFromAsistencia = crearEncabezadoAsistenciaDesdeState(st);
+  st.header = headerFromAsistencia;
+  matchHeader.value = headerFromAsistencia;
+});
+
+
+      // TEXTO DE ASISTENCIA (WHATSAPP)
+      btnExportAsistencia.addEventListener("click", () => {
+  const st = currentState();
+
+  // 1. Generar el texto de asistencia
+  const texto = generarTextoAsistenciaCompleto(st);
+  exportAsistencia.value = texto;
+
+  // 2. Construir el mismo encabezado que usa la asistencia
+  const headerFromAsistencia = crearEncabezadoAsistenciaDesdeState(st);
+
+  // 3. Copiarlo al encabezado de la pestaña EQUIPOS
+  st.header = headerFromAsistencia;
+  matchHeader.value = headerFromAsistencia;
+
+  // 4. De paso, sincronizar nombres de equipos si existen
+  if (st.attendanceLocalName) {
+    st.teamAName = st.attendanceLocalName;
+    teamANameInput.value = st.teamAName;
+  }
+  if (st.attendanceRivalName) {
+    st.teamBName = st.attendanceRivalName;
+    teamBNameInput.value = st.teamBName;
+  }
+
+  saveAppState();
+  updateTeamTitles();
+  rebuildGoalPlayerOptions();
+  buildPaymentsTable();
+  renderDiscipline();
+});
+
+      function addAttendancePlayer(key, max) {
+        const st = currentState();
+        const list = st[key] || [];
+        if (list.length >= max) {
+          alert("Máximo " + max + " jugadores en esta posición.");
+          return;
+        }
+        list.push({ id: st.attendanceNextId++, name: "" });
+        st[key] = list;
+        saveAppState();
+        renderAttendance();
+      }
+
+      btnAddGK.addEventListener("click", () => addAttendancePlayer("attendanceGKs", 2));
+      btnAddDef.addEventListener("click", () => addAttendancePlayer("attendanceDefs", 6));
+      btnAddMid.addEventListener("click", () => addAttendancePlayer("attendanceMids", 8));
+      btnAddFwd.addEventListener("click", () => addAttendancePlayer("attendanceFwds", 4));
+
+      function shuffleArray(arr) {
+        const copy = [...arr];
+        for (let i = copy.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [copy[i], copy[j]] = [copy[j], copy[i]];
+        }
+        return copy;
+      }
+
+      btnCreateTeams.addEventListener("click", () => {
+        const st = currentState();
+
+        const gk = (st.attendanceGKs || []).filter(p => (p.name || "").trim() !== "");
+        const df = (st.attendanceDefs || []).filter(p => (p.name || "").trim() !== "");
+        const mf = (st.attendanceMids || []).filter(p => (p.name || "").trim() !== "");
+        const fw = (st.attendanceFwds || []).filter(p => (p.name || "").trim() !== "");
+
+        const total = gk.length + df.length + mf.length + fw.length;
+
+        const is10 =
+          total === 10 &&
+          gk.length === 1 &&
+          df.length === 3 &&
+          mf.length === 4 &&
+          fw.length === 2;
+
+        const is20 =
+          total === 20 &&
+          gk.length === 2 &&
+          df.length === 6 &&
+          mf.length === 8 &&
+          fw.length === 4;
+
+        if (!is10 && !is20) {
+          alert(
+            "Para crear equipos automáticos debes registrar:\n\n" +
+            "• 1 portero, 3 defensas, 4 medios y 2 delanteros (10 jugadores)\n" +
+            "• o 2 porteros, 6 defensas, 8 medios y 4 delanteros (20 jugadores)."
+          );
           return;
         }
 
-        const headerRowIndex = findHeaderRowIndex(aoa);
-        sageHeaders = aoa[headerRowIndex].map((c) => String(c));
-        H.colCosto = sageHeaders.find(
-          (h) => String(h).trim() === "Last Unit Cost"
-        );
+        // limpiar goles, pagos y tarjetas porque son equipos nuevos
+        st.goals = {};
+        st.cards = {};
+        st.payments = {};
 
-        sageRows = [];
-        sageIndexByCodigo.clear();
-
-        alert(
-          "Fila de encabezados detectada: " +
-            (headerRowIndex + 1) +
-            "\n\nEncabezados:\n" +
-            sageHeaders.join(" | ")
-        );
-
-        resolveSageColumns();
-
-        // Construimos sageRows como OBJETOS con todas las columnas
-        for (let i = headerRowIndex + 1; i < aoa.length; i++) {
-          const rowArr = aoa[i];
-          if (rowArr.every((cell) => String(cell).trim() === "")) continue;
-          const obj = {};
-          sageHeaders.forEach((h, idx) => {
-            obj[h] = rowArr[idx];
-          });
-          const idx = sageRows.length;
-          sageRows.push(obj);
-
-          // Llenar mapa código -> índice
-          if (H.colCodigo) {
-            const codigo = obj[H.colCodigo];
-            if (codigo !== undefined && codigo !== null && codigo !== "") {
-              sageIndexByCodigo.set(String(codigo), idx);
-            }
-          }
+        function mapAttendance(list, role, posDefault) {
+          return list.map(p => ({
+            id: st.nextPlayerId++,
+            role,
+            name: p.name,
+            pos: posDefault
+          }));
         }
 
-        // Construimos inventoryCajas con datos relevantes
-        // 1) Guardar conteos anteriores si ya existían
-const prevByCode = new Map();
+        // sincronizar nombres si existen
+        if ((st.attendanceLocalName || "").trim() !== "") {
+          st.teamAName = st.attendanceLocalName.trim();
+        }
+        if ((st.attendanceRivalName || "").trim() !== "") {
+          st.teamBName = st.attendanceRivalName.trim();
+        }
 
-if (Array.isArray(inventoryCajas)) {
-  inventoryCajas.forEach((it) => {
-    if (it && it.codigo) {
-      prevByCode.set(String(it.codigo), it);
-    }
-  });
-}
+        if (is10) {
+          const teamA = [
+            ...mapAttendance(gk, "GK", "ARQUERO"),
+            ...mapAttendance(df, "DEF", "DEFENSA"),
+            ...mapAttendance(mf, "MID", "VOLANTE"),
+            ...mapAttendance(fw, "FWD", "DELANTERO")
+          ];
 
-// 2) Construir nueva lista PERO preservando conteos previos
-inventoryCajas = sageRows.map((row, index) => {
-  const codigo =
-    H.colCodigo && row[H.colCodigo] != null ? String(row[H.colCodigo]) : "";
+          // 10 jugadores al Equipo A
+          st.teamAPlayers = teamA;
 
-  const descripcion =
-    H.colDescripcion && row[H.colDescripcion] != null
-      ? String(row[H.colDescripcion])
-      : "";
+          // B vacío pero se le crea portero editable
+          st.teamBPlayers = [];
+          ensureGK("B");
 
-  const unidad =
-    H.colUnidad && row[H.colUnidad] != null
-      ? String(row[H.colUnidad])
-      : "";
+          saveAppState();
+          renderTeamsUI();
+          rebuildGoalPlayerOptions();
+          buildPaymentsTable();
+          renderDiscipline();
+          updateTeamTitles();
 
-  const marca =
-    H.colMarca && row[H.colMarca] != null ? String(row[H.colMarca]) : "";
+          try {
+            goalSound.currentTime = 0;
+            goalSound.play().catch(()=>{});
+          } catch(e) {}
 
-  const sistema =
-    H.colSistema && row[H.colSistema] != null
-      ? Number(row[H.colSistema]) || 0
-      : 0;
+          alert("⚽ EQUIPO A CREADO");
+          return;
+        }
 
-  const costo =
-    H.colCosto && row[H.colCosto] != null
-      ? Number(row[H.colCosto]) || 0
-      : 0;
+        // is20 → repartir A/B
+        const gkS = shuffleArray(gk);
+        const dfS = shuffleArray(df);
+        const mfS = shuffleArray(mf);
+        const fwS = shuffleArray(fw);
 
-  // Valores por defecto
-  let fisicoCajas = null;
-  let fisicoUnidades = null;
+        const teamA = [];
+        const teamB = [];
 
-  // Si ya había datos guardados para este código → se preservan
-  const prev = prevByCode.get(codigo);
-  if (prev) {
-    fisicoCajas = prev.fisicoCajas ?? null;
-    fisicoUnidades = prev.fisicoUnidades ?? null;
-  }
+        teamA.push(...mapAttendance([gkS[0]], "GK", "ARQUERO"));
+        teamB.push(...mapAttendance([gkS[1]], "GK", "ARQUERO"));
 
-  return {
-    codigo,
-    descripcion,
-    unidad,
-    marca,
-    sistema,
-    fisicoCajas,
-    fisicoUnidades,
-    lockCajas: false,
-    lockUnidades: false,
-    costo,
-    diff: 0,
-    estado: "PENDIENTE",
-    index,
-  };
-});
+        teamA.push(...mapAttendance(dfS.slice(0,3), "DEF", "DEFENSA"));
+        teamB.push(...mapAttendance(dfS.slice(3,6), "DEF", "DEFENSA"));
 
+        teamA.push(...mapAttendance(mfS.slice(0,4), "MID", "VOLANTE"));
+        teamB.push(...mapAttendance(mfS.slice(4,8), "MID", "VOLANTE"));
 
-        renderTableCajas();
-        renderTableSueltas();
-        actualizarProgreso();
-        populateFilters();
+        teamA.push(...mapAttendance(fwS.slice(0,2), "FWD", "DELANTERO"));
+        teamB.push(...mapAttendance(fwS.slice(2,4), "FWD", "DELANTERO"));
 
-        alert(
-          "Se cargaron " +
-            inventoryCajas.length +
-            " productos desde el archivo de Sage."
-        );
-      };
+        st.teamAPlayers = teamA;
+        st.teamBPlayers = teamB;
 
-      reader.readAsArrayBuffer(file);
-    });
+        saveAppState();
+        renderTeamsUI();
+        rebuildGoalPlayerOptions();
+        buildPaymentsTable();
+        renderDiscipline();
+        updateTeamTitles();
 
-    function actualizarProgreso() {
-      const tbody = document.getElementById("tbodyCajas");
-      const contadorProgresoEl =
-        document.getElementById("contadorProgreso");
+        try {
+          goalSound.currentTime = 0;
+          goalSound.play().catch(()=>{});
+        } catch(e) {}
 
-      if (!tbody || !contadorProgresoEl) return;
+        alert("⚽ EQUIPOS CREADOS");
+      });
 
-      const filas = tbody.querySelectorAll("tr");
-      const total = filas.length;
-      let contados = 0;
+      teamAJerseySelect.addEventListener("change", () => {
+        currentState().teamAJersey = teamAJerseySelect.value;
+        saveAppState();
+        updateTeamTitles();
+      });
 
-      filas.forEach((tr) => {
-        const inputs = tr.querySelectorAll("input");
-        let tieneValor = false;
+      teamBJerseySelect.addEventListener("change", () => {
+        currentState().teamBJersey = teamBJerseySelect.value;
+        saveAppState();
+        updateTeamTitles();
+      });
 
-        inputs.forEach((inp) => {
-          if (
-            inp.value !== "" &&
-            inp.value !== null &&
-            inp.value !== undefined
-          ) {
-            tieneValor = true;
+      document.querySelectorAll("[data-add-player]").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const st = currentState();
+          const val = btn.getAttribute("data-add-player");
+          const [team, role] = val.split("-");
+          if (totalPlayers(team) >= 10) {
+            alert("Máximo 10 jugadores por equipo.");
+            return;
+          }
+          const arr = getTeamPlayers(team);
+          const defaultPos = role==="DEF"?"DEFENSA":(role==="MID"?"VOLANTE":"DELANTERO");
+          arr.push({id: st.nextPlayerId++, role, name:"", pos:defaultPos});
+          setTeamPlayers(team, arr);
+          saveAppState();
+          renderTeamsUI();
+          rebuildGoalPlayerOptions();
+          buildPaymentsTable();
+          renderDiscipline();
+        });
+      });
+
+      // TABS
+      tabButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          const tabName = btn.getAttribute("data-tab");
+          tabButtons.forEach(b=>b.classList.remove("active"));
+          btn.classList.add("active");
+          tabContents.forEach(tc => {
+            tc.classList.remove("active");
+            if (tc.id === "tab-"+tabName) tc.classList.add("active");
+          });
+        });
+      });
+
+      // SUBTABS
+      subtabButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          const sub = btn.getAttribute("data-subtab");
+          subtabButtons.forEach(b=>b.classList.remove("active"));
+          btn.classList.add("active");
+          if (sub === "goles") {
+            subtabGoles.style.display = "block";
+            subtabDisciplina.style.display = "none";
+          } else {
+            subtabGoles.style.display = "none";
+            subtabDisciplina.style.display = "block";
           }
         });
-
-        if (tieneValor) {
-          contados++;
-        }
       });
 
-      contadorProgresoEl.textContent =
-        contados + " de " + total + " productos contados";
-      renderResumenEjecutivo();
-    }
+      // LISTAS
+      listButtons.forEach(btn => {
+        btn.addEventListener("click", () => {
+          const idx = parseInt(btn.getAttribute("data-list"),10);
+          if (idx === appState.currentListIndex) return;
+          clearInterval(timerInterval);
+          timerInterval = null;
+          currentState().timerRunning = false;
+          saveAppState();
 
-    // ---------- Filtros ----------
-    function populateFilters() {
-      const marcas = new Set();
-      const especialidades = new Set(["Varios"]);
+          appState.currentListIndex = idx;
+          listButtons.forEach(b=>b.classList.remove("active"));
+          btn.classList.add("active");
 
-      inventoryCajas.forEach((item) => {
-        if (item.marca) marcas.add(item.marca);
-        if (item.especialidad) especialidades.add(item.especialidad);
+          ensureGK("A");
+          ensureGK("B");
+          hydrateUIFromState();
+        });
       });
 
-      filterMarca.innerHTML = '<option value="__ALL__">Todas</option>';
-      marcas.forEach((m) => {
-        const opt = document.createElement("option");
-        opt.value = m;
-        opt.textContent = m;
-        filterMarca.appendChild(opt);
-      });
-
-      filterEsp.innerHTML = '<option value="__ALL__">Todas</option>';
-      especialidades.forEach((e) => {
-        const opt = document.createElement("option");
-        opt.value = e;
-        opt.textContent = e;
-        filterEsp.appendChild(opt);
-      });
-    }
-
-    filterMarca.addEventListener("change", () => {
-      renderTableCajas();
-      renderTableSueltas();
-    });
-    filterEsp.addEventListener("change", () => {
-      renderTableCajas();
-      renderTableSueltas();
-    });
-
-    searchCajas.addEventListener("input", renderTableCajas);
-    searchSueltas.addEventListener("input", renderTableSueltas);
-
-    // ---------- Diferencias ----------
-    function calculateDiff(sistema, fisico) {
-      if (fisico === null || fisico === undefined || fisico === "") return null;
-      return sistema - fisico;
-    }
-    function formatDiff(diff) {
-      if (diff === null) return "–";
-      if (diff === 0) return "0";
-      return diff.toString();
-    }
-    function diffClass(diff) {
-      if (diff === null) return "num-neutral";
-      if (diff === 0) return "num-neutral";
-      if (diff > 0) return "num-positive";
-      return "num-negative";
-    }
-    function applyStatusStyle(el, diff) {
-      el.className = "status-pill";
-      if (diff === null) {
-        el.textContent = "Pendiente";
-        el.classList.add("status-warn");
-        return;
+      // Botón escoba: limpiar partido de la lista actual
+      if (btnResetMatch) {
+        btnResetMatch.addEventListener("click", () => {
+          if (!confirm("¿Seguro que quieres limpiar TODO el partido de esta lista? (jugadores, reservas, goles, cronómetro, tarjetas, pagos y asistencia)")) {
+            return;
+          }
+          resetCurrentMatchState();
+        });
       }
-      if (diff === 0) {
-        el.textContent = "OK";
-        el.classList.add("status-ok");
-      } else if (Math.abs(diff) <= 2) {
-        el.textContent = "Revisar";
-        el.classList.add("status-warn");
-      } else {
-        el.textContent = "Alerta";
-        el.classList.add("status-alert");
+
+      // GOLES
+      function rebuildGoalPlayerOptions() {
+        goalPlayerSelect.innerHTML = "";
+        const players = allPlayersFlat();
+        players.forEach(p => {
+          const opt = document.createElement("option");
+          const st = currentState();
+          const teamLabel = p.team==="A" ? (st.teamAName || "Equipo A") : (st.teamBName || "Equipo B");
+          const roleLabel = p.role==="GK"?"ARQ.":p.role==="DEF"?"DEF.":p.role==="MID"?"VOL.":"DEL.";
+          opt.value = p.id;
+          opt.textContent = `${teamLabel} - ${p.name || "Jugador"} (${roleLabel})`;
+          goalPlayerSelect.appendChild(opt);
+        });
       }
-    }
 
-    // ---------- Render tablas ----------
-    function renderTableCajas() {
-      tbodyCajas.innerHTML = "";
-      const texto = (searchCajas.value || "").toLowerCase();
-      const fMarca = filterMarca.value;
-      const fEsp = filterEsp.value;
+      function renderGoalsTable() {
+        const st = currentState();
+        goalsTableBody.innerHTML = "";
+        const entries = Object.entries(st.goals)
+          .map(([id,minutes])=>({id:parseInt(id,10), minutes}))
+          .filter(e=>Array.isArray(e.minutes) && e.minutes.length>0);
 
-      inventoryCajas.forEach((item, index) => {
-        if (!item.codigo && !item.descripcion) return;
-
-        const hayFiltro = texto.length > 0;
-        const coincideTexto =
-          !hayFiltro ||
-          item.codigo.toLowerCase().includes(texto) ||
-          item.descripcion.toLowerCase().includes(texto);
-        if (!coincideTexto) return;
-
-        if (fMarca !== "__ALL__" && item.marca !== fMarca) return;
-        if (fEsp !== "__ALL__" && item.especialidad !== fEsp) return;
-
-        const tr = document.createElement("tr");
-
-        const tdCodigo = document.createElement("td");
-        tdCodigo.className = "col-codigo";
-        tdCodigo.textContent = item.codigo;
-        tr.appendChild(tdCodigo);
-
-        const tdDesc = document.createElement("td");
-        tdDesc.className = "col-descripcion";
-        tdDesc.textContent = item.descripcion;
-        tr.appendChild(tdDesc);
-
-        const tdUM = document.createElement("td");
-        tdUM.className = "col-um";
-        tdUM.textContent = item.unidad || "";
-        tr.appendChild(tdUM);
-
-        const tdSistema = document.createElement("td");
-        tdSistema.className = "col-num";
-
-        if (
-          item.sistema === "" ||
-          item.sistema === null ||
-          item.sistema === undefined ||
-          Number.isNaN(item.sistema)
-        ) {
-          tdSistema.textContent = "";
-        } else {
-          tdSistema.textContent = item.sistema;
+        if (!entries.length) {
+          updateScoreboard();
+          return;
         }
 
-        tr.appendChild(tdSistema);
+        entries.sort((a,b)=>b.minutes.length - a.minutes.length);
+        const maxGoals = entries[0].minutes.length;
 
-        const tdFisico = document.createElement("td");
-        tdFisico.className = "col-input col-conteo";
-
-        const inputCajas = document.createElement("input");
-        inputCajas.type = "number";
-        inputCajas.min = "0";
-        inputCajas.step = "1";
-        inputCajas.className = "input-count";
-        inputCajas.value =
-          item.fisicoCajas != null ? item.fisicoCajas : "";
-        inputCajas.dataset.index = index.toString();
-
-        tdFisico.appendChild(inputCajas);
-        tr.appendChild(tdFisico);
-
-        const tdUnid = document.createElement("td");
-        tdUnid.className = "col-units";
-        const inputUnid = document.createElement("input");
-        inputUnid.type = "number";
-        inputUnid.min = "0";
-        inputUnid.step = "1";
-        inputUnid.className = "input-count";
-        inputUnid.value =
-          item.fisicoUnidades !== null &&
-          item.fisicoUnidades !== undefined
-            ? item.fisicoUnidades
-            : "";
-        inputUnid.dataset.index = index.toString();
-        inputUnid.dataset.field = "unidades";
-        tdUnid.appendChild(inputUnid);
-        tr.appendChild(tdUnid);
-
-        const tdDiff = document.createElement("td");
-        const diff = calculateDiff(item.sistema, item.fisicoCajas);
-        tdDiff.textContent = formatDiff(diff);
-        tdDiff.className = "col-diff " + diffClass(diff);
-        tr.appendChild(tdDiff);
-
-        const tdStatus = document.createElement("td");
-        const statusSpan = document.createElement("span");
-        applyStatusStyle(statusSpan, diff);
-        tdStatus.appendChild(statusSpan);
-        tr.appendChild(tdStatus);
-
-        inputCajas.onblur = () => {
-          handleCountChange(index, "cajas", inputCajas, tdDiff, statusSpan);
-        };
-
-        inputUnid.onblur = () => {
-          handleCountChange(index, "unidades", inputUnid, tdDiff, statusSpan);
-        };
-
-        tbodyCajas.appendChild(tr);
-      });
-    }
-
-    function renderTableSueltas() {
-      tbodySueltas.innerHTML = "";
-      const texto = (searchSueltas.value || "").toLowerCase();
-      const fMarca = filterMarca.value;
-      const fEsp = filterEsp.value;
-
-      inventoryCajas.forEach((item) => {
-        if (!item.codigo && !item.descripcion) return;
-
-        const hayFiltro = texto.length > 0;
-        const coincideTexto =
-          !hayFiltro ||
-          item.codigo.toLowerCase().includes(texto) ||
-          item.descripcion.toLowerCase().includes(texto);
-        if (!coincideTexto) return;
-
-        if (fMarca !== "__ALL__" && item.marca !== fMarca) return;
-        if (fEsp !== "__ALL__" && item.especialidad !== fEsp) return;
-
-        const tr = document.createElement("tr");
-
-        const tdCodigo = document.createElement("td");
-        tdCodigo.className = "col-codigo";
-        tdCodigo.textContent = item.codigo;
-        tr.appendChild(tdCodigo);
-
-        const tdDesc = document.createElement("td");
-        tdDesc.className = "col-descripcion";
-        tdDesc.textContent = item.descripcion;
-        tr.appendChild(tdDesc);
-
-        const tdUnid = document.createElement("td");
-        tdUnid.className = "col-units";
-        tdUnid.textContent =
-          item.fisicoUnidades !== null &&
-          item.fisicoUnidades !== undefined
-            ? item.fisicoUnidades
-            : "";
-        tr.appendChild(tdUnid);
-
-        const tdStatus = document.createElement("td");
-        const statusSpan = document.createElement("span");
-        statusSpan.className = "status-pill";
-
-        if (item.fisicoUnidades && item.fisicoUnidades > 0) {
-          statusSpan.textContent = "Con sueltas";
-          statusSpan.classList.add("status-warn");
-        } else {
-          statusSpan.textContent = "Sin sueltas";
-          statusSpan.classList.add("status-ok");
+        const players = allPlayersFlat();
+        function findPlayer(id) {
+          return players.find(p=>p.id===id);
         }
 
-        tdStatus.appendChild(statusSpan);
-        tr.appendChild(tdStatus);
+        entries.forEach(entry => {
+          const p = findPlayer(entry.id);
+          if (!p) return;
+          const tr = document.createElement("tr");
 
-        tbodySueltas.appendChild(tr);
-      });
-    }
+          const nameTd = document.createElement("td");
+          const baseName = p.name || "Jugador";
+          let nameText = baseName;
+          if (entry.minutes.length === maxGoals && maxGoals > 0) {
+            nameTd.classList.add("goal-top-scorer");
+            nameText = `${baseName} 🏆⚽`;
+          }
+          nameTd.textContent = nameText;
 
-    function handleCountChange(index, tipo, inputEl, tdDiff, statusSpan) {
-      const item = inventoryCajas[index];
+          const goalsTd = document.createElement("td");
+          goalsTd.textContent = entry.minutes.length;
 
-      const nuevoValor =
-        inputEl.value === "" ? null : Number(inputEl.value);
+          const minutesTd = document.createElement("td");
+          const sorted = [...entry.minutes].sort((a,b)=>a-b);
+          minutesTd.textContent = `⚽➡️⏱${sorted.map(m=>`${m}'`).join(", ")}`;
 
-      if (tipo === "cajas") {
-        item.fisicoCajas = nuevoValor;
-      } else {
-        item.fisicoUnidades = nuevoValor;
+          const delTd = document.createElement("td");
+          const delBtn = document.createElement("button");
+          delBtn.type = "button";
+          delBtn.className = "delete-goal-btn";
+          delBtn.title = "Eliminar goles de este jugador";
+          delBtn.textContent = "🗑️";
+          delBtn.addEventListener("click", () => {
+            delete st.goals[entry.id];
+            saveAppState();
+            renderGoalsTable();
+          });
+          delTd.appendChild(delBtn);
+
+          tr.appendChild(nameTd);
+          tr.appendChild(goalsTd);
+          tr.appendChild(minutesTd);
+          tr.appendChild(delTd);
+          goalsTableBody.appendChild(tr);
+        });
+
+        updateScoreboard();
       }
 
-      const diff = calculateDiff(item.sistema, item.fisicoCajas);
-      tdDiff.textContent = formatDiff(diff);
-      tdDiff.className = "col-diff " + diffClass(diff);
+      btnAddGoal.addEventListener("click", () => {
+        const st = currentState();
+        const playerId = parseInt(goalPlayerSelect.value,10);
+        if (!playerId) {
+          alert("Selecciona un jugador.");
+          return;
+        }
+        let minuteVal = goalMinuteInput.value.trim();
+        if (minuteVal === "") {
+          const ms = st.timerMs || 0;
+          minuteVal = Math.floor(ms/60000).toString();
+        }
+        const minute = parseInt(minuteVal,10);
+        if (isNaN(minute) || minute < 0 || minute > 300) {
+          alert("Minuto inválido.");
+          return;
+        }
+        if (!st.goals[playerId]) st.goals[playerId] = [];
+        st.goals[playerId].push(minute);
+        saveAppState();
+        goalMinuteInput.value = "";
+        renderGoalsTable();
 
-      applyStatusStyle(statusSpan, diff);
-
-      // Sincronizar con filas originales Sage
-      syncWithSage(item);
-
-      actualizarProgreso();
-      guardarEstadoPIC();
-      renderTableSueltas();
-    }
-
-    // Sincronizar objeto de la tabla con fila original de Sage
-    function syncWithSage(item) {
-      if (!H.colCodigo) return;
-      const idx = sageIndexByCodigo.get(item.codigo);
-      if (idx === undefined) return;
-
-      const row = sageRows[idx];
-      const diff = calculateDiff(item.sistema, item.fisicoCajas);
-
-      if (H.colCuentaFisica) {
-        row[H.colCuentaFisica] =
-          item.fisicoCajas === null || item.fisicoCajas === undefined
-            ? ""
-            : item.fisicoCajas;
-      }
-      if (H.colDiferencia) {
-        row[H.colDiferencia] =
-          diff === null || diff === undefined ? "" : diff;
-      }
-    }
-
-    // ----------- Botón Reiniciar -----------
-    btnReset.addEventListener("click", () => {
-      if (!inventoryCajas.length) {
-        alert("Primero carga un archivo de Sage.");
-        return;
-      }
-
-      const ok = confirm(
-        "¿Seguro que deseas reiniciar TODOS los conteos físicos?\nEsta acción no se puede deshacer."
-      );
-      if (!ok) return;
-
-      localStorage.removeItem("PIC_ESTADO");
-
-      inventoryCajas.forEach((item) => {
-        item.fisicoCajas = null;
-        item.fisicoUnidades = null;
-        item.lockCajas = false;
-        item.lockUnidades = false;
+        try {
+          goalSound.currentTime = 0;
+          goalSound.play().catch(()=>{});
+        } catch(e) {}
       });
 
-      sageRows.forEach((row) => {
-        if (H.colCuentaFisica) row[H.colCuentaFisica] = "";
-        if (H.colDiferencia) row[H.colDiferencia] = "";
+      btnClearGoals.addEventListener("click", () => {
+        const st = currentState();
+        if (!confirm("¿Seguro que quieres borrar todos los goles?")) return;
+        st.goals = {};
+        saveAppState();
+        renderGoalsTable();
       });
 
-      renderTableCajas();
-      renderTableSueltas();
-      actualizarProgreso();
-    });
+      // DISCIPLINA
+      function renderDiscipline() {
+        const st = currentState();
+        disciplineContainer.innerHTML = "";
+        const players = allPlayersFlat();
+        if (!players.length) {
+          disciplineContainer.textContent = "No hay jugadores configurados.";
+          return;
+        }
 
-    // ---------- Botón Exportar (actualiza SOLO el archivo Sage) ----------
-btnExportExcel.addEventListener("click", () => {
-  try {
-    // 1) Verificar que haya inventario cargado
-    if (!Array.isArray(inventoryCajas) || !inventoryCajas.length) {
-      alert("Primero carga un archivo de Sage.");
-      return;
-    }
+        players.forEach(p => {
+          const row = document.createElement("div");
+          row.className = "discipline-row";
 
-    // 2) Verificar que Sage está en memoria (encabezados + filas)
-    if (
-      !Array.isArray(sageHeaders) || !sageHeaders.length ||
-      !Array.isArray(sageRows)    || !sageRows.length
-    ) {
-      alert("No hay datos de Sage cargados.");
-      return;
-    }
+          const nameDiv = document.createElement("div");
+          nameDiv.className = "discipline-name";
+          nameDiv.textContent = p.name || "Jugador";
+          row.appendChild(nameDiv);
 
-    const inputNombre = document.getElementById("nombreInspector");
-    if (!inputNombre) {
-      alert("No se encontró el campo del responsable.");
-      return;
-    }
+          const cardsDiv = document.createElement("div");
+          cardsDiv.className = "discipline-cards";
+          const cardInfo = st.cards[p.id] || {yellow:0, red:0};
 
-    let nombrePersona = inputNombre.value.trim();
-    if (!nombrePersona) {
-      alert("Escribe el nombre del responsable.");
-      return;
-    }
+          let cardsText = "";
+          if (cardInfo.yellow>0) {
+            cardsText += "🟨".repeat(cardInfo.yellow);
+          }
+          if (cardInfo.red>0) {
+            if (cardsText) cardsText += " ";
+            cardsText += "🟥".repeat(cardInfo.red);
+          }
 
-    // limpiar nombre de archivo
-    nombrePersona = nombrePersona.replace(/[\\\/:*?"<>|]/g, "_");
+          if (cardInfo.yellow >= 2 && cardInfo.red > 0) {
+            cardsText = "🟨🟨 = 🟥";
+          }
 
-    // 3) Actualizar SOLO "Cuenta física" y "Diferencia" en sageRows
-    inventoryCajas.forEach((item, index) => {
-      const row = sageRows[index];
-      if (!row) return;
+          cardsDiv.textContent = cardsText || "—";
+          row.appendChild(cardsDiv);
 
-      // Conteo físico
-      if (H.colCuentaFisica) {
-        row[H.colCuentaFisica] =
-          item.fisicoCajas === null || item.fisicoCajas === undefined
-            ? ""
-            : item.fisicoCajas;
+          const actionsDiv = document.createElement("div");
+          actionsDiv.className = "discipline-actions";
+
+          const btnYellow = document.createElement("button");
+          btnYellow.type = "button";
+          btnYellow.className = "btn-yellow";
+          btnYellow.textContent = "🟨";
+          btnYellow.title = "Agregar amarilla";
+          btnYellow.addEventListener("click", () => {
+            const c = st.cards[p.id] || { yellow: 0, red: 0 };
+            c.yellow += 1;
+            st.cards[p.id] = c;
+            saveAppState();
+            renderDiscipline();
+          });
+
+          const btnRed = document.createElement("button");
+          btnRed.type = "button";
+          btnRed.className = "btn-red";
+          btnRed.textContent = "🟥";
+          btnRed.title = "Agregar roja";
+          btnRed.addEventListener("click", () => {
+            const c = st.cards[p.id] || { yellow: 0, red: 0 };
+            c.red += 1;
+            st.cards[p.id] = c;
+            saveAppState();
+            renderDiscipline();
+          });
+
+          const btnClear = document.createElement("button");
+          btnClear.type = "button";
+          btnClear.className = "btn-secondary";
+          btnClear.textContent = "❌";
+          btnClear.title = "Borrar tarjetas de este jugador";
+          btnClear.addEventListener("click", () => {
+            delete st.cards[p.id];
+            saveAppState();
+            renderDiscipline();
+          });
+
+          actionsDiv.appendChild(btnYellow);
+          actionsDiv.appendChild(btnRed);
+          actionsDiv.appendChild(btnClear);
+          row.appendChild(actionsDiv);
+
+          disciplineContainer.appendChild(row);
+        });
       }
 
-      // Diferencia
-      if (H.colDiferencia) {
-        const sisRaw = item.sistema;
-        const fisRaw = item.fisicoCajas;
+      btnExportDisciplina.addEventListener("click", () => {
+        alert("La disciplina se agregará al final del texto de estadísticas cuando generes el texto.");
+      });
 
-        let diff = "";
-        if (
-          sisRaw !== "" && sisRaw !== null && sisRaw !== undefined &&
-          fisRaw !== "" && fisRaw !== null && fisRaw !== undefined
-        ) {
-          const sis = Number(sisRaw);
-          const fis = Number(fisRaw);
-          if (Number.isFinite(sis) && Number.isFinite(fis)) {
-            diff = sis - fis;
+      // PAGOS
+      function buildPaymentsTable() {
+  const st = currentState();
+  paymentsTableBody.innerHTML = "";
+
+  // Solo jugadores que tengan nombre escrito
+  const players = allPlayersFlat().filter(
+    p => (p.name || "").trim() !== ""
+  );
+
+  let total = 0;
+
+        players.forEach(p => {
+          const tr = document.createElement("tr");
+          const amount = parseFloat(st.payments[p.id] || 0);
+          const isPaid = amount >= PAYMENT_TOTAL;
+          total += isNaN(amount) ? 0 : amount;
+
+          const tdPlayer = document.createElement("td");
+          const spanName = document.createElement("span");
+          const baseName = p.name || "Jugador";
+          spanName.textContent = baseName + (isPaid ? " ✅" : "");
+          spanName.className = isPaid ? "player-name-paid" : "player-name-unpaid";
+          tdPlayer.appendChild(spanName);
+
+          const tdAmount = document.createElement("td");
+          const inputAmount = document.createElement("input");
+
+          inputAmount.type = "text";
+          inputAmount.value = amount ? amount.toFixed(2) : "0.00";
+          inputAmount.style.width = "80px";
+
+          inputAmount.addEventListener("input", () => {
+            inputAmount.value = inputAmount.value
+              .replace(/[^0-9.]/g, "")
+              .replace(/(\..*)\./g, "$1");
+          });
+
+          inputAmount.addEventListener("blur", () => {
+            let val = parseFloat(inputAmount.value);
+            if (isNaN(val)) val = 0;
+            st.payments[p.id] = val;
+            inputAmount.value = val.toFixed(2);
+            saveAppState();
+            buildPaymentsTable();
+          });
+
+          tdAmount.appendChild(inputAmount);
+
+          const tdStatus = document.createElement("td");
+          const spanStatus = document.createElement("span");
+          if (isPaid) {
+            spanStatus.textContent = "Pagó";
+            spanStatus.className = "status-paid";
+          } else {
+            const diff = Math.max(PAYMENT_TOTAL - amount, 0);
+            spanStatus.textContent = `Debe $${diff.toFixed(2)}`;
+            spanStatus.className = "status-unpaid";
+          }
+          tdStatus.appendChild(spanStatus);
+
+          tr.appendChild(tdPlayer);
+          tr.appendChild(tdAmount);
+          tr.appendChild(tdStatus);
+          paymentsTableBody.appendChild(tr);
+        });
+
+        totalMoney.textContent = `Total recaudado: $${total.toFixed(2)} / $${(PAYMENT_TOTAL * 20).toFixed(2)}`;
+      }
+
+      // EXPORT TEXTOS
+      btnExportEquipos.addEventListener("click", () => {
+        const st = currentState();
+        const headerText = st.header || "";
+        const extraText = st.extraInfo || "";
+        const teamAName = st.teamAName || "Calidosos F.C";
+        const teamBName = st.teamBName || "Rivales F.C";
+        const teamAPlayers = st.teamAPlayers;
+        const teamBPlayers = st.teamBPlayers;
+
+        function buildTeamBlock(name, jersey, players) {
+          let t = "";
+          t += `✦ ${jersey} ${decorated(name)} ${jersey} ✦\n\n`;
+          t += `𝙇𝙄𝙎𝙏𝘼𝘿𝙊 ⚽\n\n`;
+
+          const gks = players.filter(p=>p.role==="GK");
+          const defs = players.filter(p=>p.role==="DEF");
+          const mids = players.filter(p=>p.role==="MID");
+          const fwds = players.filter(p=>p.role==="FWD");
+
+          let num = 1;
+          if (gks.length) {
+            t += `𝘼𝙍𝙌𝙐𝙀𝙍𝙊 🧤\n`;
+            gks.forEach(p => {
+              t += `${num}. ${p.name || "Jugador"}  **${(p.pos || "ARQUERO").toUpperCase()}**\n`;
+              num++;
+            });
+            t += "\n";
+          }
+
+          if (defs.length) {
+            t += `𝘿𝙀𝙁𝙀𝙉𝙎𝘼𝙎 🛡️\n`;
+            defs.forEach(p => {
+              t += `${num}. ${p.name || "Jugador"}  **${(p.pos || "DEFENSA").toUpperCase()}**\n`;
+              num++;
+            });
+            t += "\n";
+          }
+
+          if (mids.length) {
+            t += `𝙑𝙊𝙇𝘼𝙉𝙏𝙀𝙎 🎽\n`;
+            mids.forEach(p => {
+              t += `${num}. ${p.name || "Jugador"}  **${(p.pos || "VOLANTE").toUpperCase()}**\n`;
+              num++;
+            });
+            t += "\n";
+          }
+
+          if (fwds.length) {
+            t += `𝘿𝙀𝙇𝘼𝙉𝙏𝙀𝙍𝙊𝙎 🎯\n`;
+            fwds.forEach(p => {
+              t += `${num}. ${p.name || "Jugador"}  **${(p.pos || "DELANTERO").toUpperCase()}**\n`;
+              num++;
+            });
+            t += "\n";
+          }
+
+          t += "*__________________________________*\n\n";
+          return t;
+        }
+
+        let text = "";
+        text += headerText.trim() + "\n\n";
+        text += buildTeamBlock(teamAName, st.teamAJersey, teamAPlayers);
+        text += buildTeamBlock(teamBName, st.teamBJersey, teamBPlayers);
+        if (extraText.trim()) {
+          text += extraText.trim() + "\n";
+        }
+        exportEquipos.value = text;
+      });
+
+      btnExportGoles.addEventListener("click", () => {
+        const st = currentState();
+        const players = allPlayersFlat();
+        const entries = Object.entries(st.goals)
+          .map(([id,minutes])=>({id:parseInt(id,10), minutes}))
+          .filter(e=>Array.isArray(e.minutes) && e.minutes.length>0);
+
+        if (!entries.length) {
+          exportGoles.value = "Sin goles registrados.";
+          return;
+        }
+
+        entries.sort((a,b)=>b.minutes.length - a.minutes.length);
+        const maxGoals = entries[0].minutes.length;
+
+        function findPlayer(id) {
+          return players.find(p=>p.id===id);
+        }
+
+        const teamAName = st.teamAName || "Calidosos F.C";
+        const teamBName = st.teamBName || "Rivales F.C";
+
+        const goalsByTeam = {A:[],B:[]};
+        entries.forEach(e => {
+          const p = findPlayer(e.id);
+          if (!p) return;
+          goalsByTeam[p.team].push({...e, player:p});
+        });
+
+        function sumGoals(list) {
+          return list.reduce((acc,e)=>acc+e.minutes.length,0);
+        }
+
+        let text = "";
+        text += "𝙀𝙨𝙩𝙖𝙙𝙞́𝙨𝙩𝙞𝙘𝙖𝙨 𝘿𝙚𝙡 𝙋𝙖𝙧𝙩𝙞𝙙𝙤\n\n";
+
+        function buildTeamGoals(team, name, jersey) {
+          const list = goalsByTeam[team];
+          const marcador = sumGoals(list);
+          text += `${decorated(name.toUpperCase())} (${jersey}) : ↪️👕\n`;
+          text += `𝙈𝘼𝙍𝘾𝘼𝘿𝙊𝙍 : ↪️ (${marcador})\n\n`;
+          text += `𝙂𝙊𝙇𝙀𝘼𝘿𝙊𝙍𝙀𝙎 : ↪️⚽➡️⏱\n`;
+
+          if (!list.length) {
+            text += "—\n\n*______________________________*\n\n";
+            return;
+          }
+
+          list.forEach((e, idx) => {
+            const p = e.player;
+            const sorted = [...e.minutes].sort((a,b)=>a-b);
+            const isTop = e.minutes.length === maxGoals && maxGoals>0;
+            let line = `${idx+1}. ${p.name || "Jugador"}`;
+            if (isTop) line = `**${line} 🏆⚽**`;
+            line += `  ⚽➡️⏱${sorted.map(m=>`${m}'`).join(", ")}`;
+            text += line + "\n";
+          });
+
+          text += "\n*______________________________*\n\n";
+        }
+
+        buildTeamGoals("A", teamAName, currentState().teamAJersey);
+        buildTeamGoals("B", teamBName, currentState().teamBJersey);
+
+        const cardEntries = Object.entries(currentState().cards)
+          .map(([id,c])=>({id:parseInt(id,10), ...c}))
+          .filter(c=> (c.yellow||0) >0 || (c.red||0)>0);
+
+        if (cardEntries.length) {
+          text += "𝘿𝙞𝙨𝙘𝙞𝙥𝙡𝙞𝙣𝙖 (𝙏𝙖𝙧𝙟𝙚𝙩𝙖𝙨)\n";
+          cardEntries.forEach(c=>{
+            const p = players.find(pl=>pl.id===c.id);
+            if (!p) return;
+            let line = `- ${p.name || "Jugador"}: `;
+            if (c.yellow>=2 && c.red>0) {
+              line += "🟨🟨 = 🟥";
+            } else {
+              if (c.yellow>0) line += "🟨".repeat(c.yellow) + " ";
+              if (c.red>0) line += "🟥".repeat(c.red);
+            }
+            text += line + "\n";
+          });
+        }
+
+        exportGoles.value = text;
+      });
+
+      btnExportPagos.addEventListener("click", () => {
+        const st = currentState();
+        const players = allPlayersFlat();
+        if (!players.length) {
+          exportPagos.value = "Sin jugadores configurados.";
+          return;
+        }
+
+        let text = "";
+        text += "💰 𝘾𝙤𝙣𝙩𝙧𝙤𝙡 𝙙𝙚 𝙥𝙖𝙜𝙤𝙨 💰\n\n";
+
+        function addTeamBlock(team, title) {
+          text += `*${title}*\n`;
+          const list = players.filter(p=>p.team===team);
+          list.forEach((p,idx)=>{
+            const amount = parseFloat(st.payments[p.id] || 0);
+            if (amount >= PAYMENT_TOTAL) {
+              text += `${idx+1}. **${p.name || "Jugador"}** ✔️ — **$${amount.toFixed(2)}**\n`;
+            } else {
+              const diff = Math.max(PAYMENT_TOTAL - amount, 0);
+              text += `${idx+1}. ${p.name || "Jugador"} — $${amount.toFixed(2)} (Debe $${diff.toFixed(2)})\n`;
+            }
+          });
+          text += "\n";
+        }
+
+        const teamAName = st.teamAName || "Calidosos F.C";
+        const teamBName = st.teamBName || "Rivales F.C";
+        addTeamBlock("A", teamAName);
+        addTeamBlock("B", teamBName);
+
+        const total = Object.values(st.payments).reduce((acc,v)=>acc + (parseFloat(v)||0),0);
+        text += `Total recaudado: **$${total.toFixed(2)} / $${(PAYMENT_TOTAL*20).toFixed(2)}**\n`;
+
+        exportPagos.value = text;
+      });
+
+      // CRONÓMETRO
+      function updateTimerDisplay() {
+        const st = currentState();
+        timerDisplay.textContent = formatTimer(st.timerMs || 0);
+      }
+
+      btnTimerStart.addEventListener("click", () => {
+        const st = currentState();
+        if (st.timerRunning) return;
+        st.timerRunning = true;
+        let last = performance.now();
+        clearInterval(timerInterval);
+        timerInterval = setInterval(() => {
+          const now = performance.now();
+          const diff = now - last;
+          last = now;
+          st.timerMs = (st.timerMs || 0) + diff;
+          timerDisplay.textContent = formatTimer(st.timerMs);
+        }, 50);
+      });
+
+      btnTimerPause.addEventListener("click", () => {
+        const st = currentState();
+        st.timerRunning = false;
+        clearInterval(timerInterval);
+        timerInterval = null;
+        saveAppState();
+      });
+
+      btnTimerReset.addEventListener("click", () => {
+        const st = currentState();
+        st.timerRunning = false;
+        st.timerMs = 0;
+        clearInterval(timerInterval);
+        timerInterval = null;
+        updateTimerDisplay();
+        saveAppState();
+      });
+
+      // CANCHA
+      btnGeneratePitch.addEventListener("click", () => {
+        const st = currentState();
+        const canvas = pitchCanvas;
+        const ctx = canvas.getContext("2d");
+        const W = canvas.width;
+        const H = canvas.height;
+
+        ctx.fillStyle = "#0b7a25";
+        ctx.fillRect(0,0,W,H);
+
+        for (let i=0;i<10;i++){
+          ctx.fillStyle = i%2===0 ? "#0c8a29" : "#0a6b20";
+          const y = (H/10)*i;
+          ctx.fillRect(0,y,W,H/10);
+        }
+
+        ctx.strokeStyle = "#ffffff";
+        ctx.lineWidth = 4;
+        ctx.strokeRect(40,40,W-80,H-80);
+
+        ctx.beginPath();
+        ctx.arc(W/2,H/2,80,0,Math.PI*2);
+        ctx.stroke();
+
+        function drawHalf(isTop) {
+          ctx.strokeRect(
+            W/4,
+            isTop ? 40 : H-200,
+            W/2,
+            160
+          );
+          ctx.strokeRect(
+            W/2-40,
+            isTop ? 40 : H-80,
+            80,
+            40
+          );
+        }
+        drawHalf(true);
+        drawHalf(false);
+
+        const logo = document.getElementById("logoCalidosos");
+        if (logo && logo.complete) {
+          const logoW = 360;
+          const logoH = logo.height * (logoW / logo.width);
+          ctx.save();
+          ctx.globalAlpha = 0.28;
+          ctx.drawImage(logo, (W-logoW)/2, (H-logoH)/2, logoW, logoH);
+          ctx.restore();
+        }
+
+        function drawPlayer(x, y, name, color) {
+          ctx.save();
+
+          const R = 30;
+
+          ctx.fillStyle = "rgba(0,0,0,0.55)";
+          ctx.beginPath();
+          ctx.arc(x, y, R+4, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.fillStyle = color;
+          ctx.beginPath();
+          ctx.arc(x, y, R, 0, Math.PI * 2);
+          ctx.fill();
+
+          ctx.strokeStyle = "#ffffff";
+          ctx.lineWidth = 3;
+          ctx.stroke();
+
+          let label = (name || "Jugador").trim();
+          if (label.length > 14) label = label.slice(0, 14) + "…";
+
+          ctx.fillStyle = "#ffffff";
+          ctx.font = "20px system-ui";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "top";
+
+          const labelY = y + R + 4;
+          ctx.fillText(label, x, labelY);
+
+          ctx.restore();
+        }
+
+        function drawTeamOnHalf(team, isTop) {
+          const players = getTeamPlayers(team);
+
+          const gk   = players.filter(p => p.role === "GK").slice(0, 1);
+          const defs = players.filter(p => p.role === "DEF").slice(0, 2);
+          const mids = players.filter(p => p.role === "MID").slice(0, 3);
+          const fwds = players.filter(p => p.role === "FWD").slice(0, 1);
+
+          const color = team === "A" ? "#fbbf24" : "#22c55e";
+
+          const yGK_top    = 160;
+          const yDEF_top   = 290;
+          const yMID_top   = 420;
+          const yFWD_top   = 540;
+
+          const yFWD_bot   = 660;
+          const yMID_bot   = 780;
+          const yDEF_bot   = 910;
+          const yGK_bot    = 1040;
+
+          const yGK  = isTop ? yGK_top  : yGK_bot;
+          const yDef = isTop ? yDEF_top : yDEF_bot;
+          const yMid = isTop ? yMID_top : yMID_bot;
+          const yFwd = isTop ? yFWD_top : yFWD_bot;
+
+          function lineY(list, y) {
+            if (!list.length) return;
+            const marginX = 80;
+            const usableW = W - marginX * 2;
+            const step = usableW / (list.length + 1);
+
+            list.forEach((p, idx) => {
+              const x = marginX + step * (idx + 1);
+              drawPlayer(x, y, p.name || "Jugador", color);
+            });
+          }
+
+          if (gk.length) lineY(gk, yGK);
+          if (defs.length) lineY(defs, yDef);
+
+          if (mids.length) {
+            const spacing = 150;
+            const centerX = W / 2;
+            const baseIndex = mids.length === 3 ? [-1,0,1] :
+                              mids.length === 2 ? [-0.7,0.7] : [0];
+            mids.forEach((p, i) => {
+              const x = centerX + baseIndex[i] * spacing;
+              drawPlayer(x, yMid, p.name || "Jugador", color);
+            });
+          }
+
+          if (fwds.length) {
+            fwds.forEach(p => {
+              const x = W / 2;
+              drawPlayer(x, yFwd, p.name || "Jugador", color);
+            });
           }
         }
 
-        row[H.colDiferencia] = diff === "" ? "" : diff;
-      }
-    });
+        drawTeamOnHalf("A", true);
+        drawTeamOnHalf("B", false);
 
-        // 4) Construir la matriz AoA a partir de sageHeaders + sageRows   
-    const aoa = [];
+        ctx.fillStyle = "#f9fafb";
+        ctx.font = "20px system-ui";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "bottom";
+        ctx.fillText("Organizador: Darinel Falcón", W/2, H-20);
 
-    // Encabezados originales + nueva columna
-    const headersExport = [...sageHeaders, "Unidades sueltas"];
-    aoa.push(headersExport);
+        try {
+          const link = document.createElement("a");
+          link.download = "alineaciones_cancha.jpg";
+          link.href = canvas.toDataURL("image/jpeg",0.9);
+          link.click();
+        } catch (e) {
+          console.error("Error generando imagen de cancha:", e);
+          alert("No se pudo generar la imagen de la cancha (revisa permisos del navegador).");
+        }
+      });
 
-    // Filas
-    sageRows.forEach((rowObj, index) => {
-      // Datos originales en el mismo orden
-      const rowArr = sageHeaders.map((h) =>
-        rowObj[h] !== undefined && rowObj[h] !== null ? rowObj[h] : ""
-      );
-    
-      const item = inventoryCajas[index];
-      const sueltas =
-        item && item.fisicoUnidades != null ? item.fisicoUnidades : "";
-
-      // Agregar como última columna
-      rowArr.push(sueltas);
-
-      aoa.push(rowArr);
-    });
-
-
-    // 5) Crear y descargar el Excel
-    const ws = XLSX.utils.aoa_to_sheet(aoa);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Sage");
-
-    XLSX.writeFile(wb, `PIC_Sage_${nombrePersona}.xlsx`);
-  } catch (err) {
-    console.error(err);
-    alert("Error exportando el archivo Sage: " + err.message);
-  }
-});
-
-
-    // ====== SEGURIDAD SOLO AL EDITAR UN VALOR ======
-    let valorAnteriorConteo = "";
-
-    document.addEventListener("focusin", function (e) {
-      if (!e.target.classList.contains("input-count")) return;
-      valorAnteriorConteo = e.target.value || "";
-    });
-
-    document.addEventListener("change", function (e) {
-      if (!e.target.classList.contains("input-count")) return;
-
-      const nuevoValor = e.target.value || "";
-
-      if (valorAnteriorConteo === "" && nuevoValor !== "") {
-        return;
-      }
-
-      if (valorAnteriorConteo === nuevoValor) {
-        return;
-      }
-
-      const pass = prompt(
-        "Ingrese la contraseña para modificar un conteo:"
-      );
-
-      if (pass !== SUPERVISOR_PIN) {
-        e.target.value = valorAnteriorConteo;
-      }
+      // Inicializar UI
+      hydrateUIFromState();
     });
   </script>
-
-<script>
-  if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("/sw.js")
-      .catch(function (err) {
-        console.error("Error registrando el service worker", err);
-      });
-  }
-
-function guardarEstadoPIC() {
-  const estado = {
-    cajas: inventoryCajas,
-    responsable: document.getElementById("nombreInspector")?.value || "",
-        sageAoA: Array.isArray(sageAoA) ? sageAoA : null,
-    idxCuentaFisica,
-    idxDiferencia
-  };
-
-  localStorage.setItem("PIC_ESTADO", JSON.stringify(estado));
-}
-
-function cargarEstadoPIC() {
-  const data = localStorage.getItem("PIC_ESTADO");
-  if (!data) return;
-
-  const estado = JSON.parse(data);
-
-    if (estado.sageAoA && Array.isArray(estado.sageAoA)) {
-    sageAoA = estado.sageAoA;
-    sageHeaders = sageAoA[0].map(c => String(c));
-
-    idxCuentaFisica = typeof estado.idxCuentaFisica === "number"
-      ? estado.idxCuentaFisica
-      : -1;
-
-    idxDiferencia = typeof estado.idxDiferencia === "number"
-      ? estado.idxDiferencia
-      : -1;
-
-    sageCargado = true;
-    guardarEstadoPIC(); 
-  }
-
-  if (estado.cajas && Array.isArray(estado.cajas)) {
-    inventoryCajas = estado.cajas;
-    renderTableCajas();
-    renderTableSueltas();
-  }
-
-  if (estado.responsable && document.getElementById("nombreInspector")) {
-    document.getElementById("nombreInspector").value = estado.responsable;
-  }
-
-  actualizarProgreso();
-}
-
-document.addEventListener("input", function (e) {
-  if (e.target.classList.contains("input-count")) {
-    guardarEstadoPIC();
-  }
-});
-
-window.addEventListener("load", function () {
-  cargarEstadoPIC();
-});
-
-
-document.addEventListener("input", function (e) {
-  if (e.target.classList.contains("input-count")) {
-    guardarEstadoPIC();
-  }
-});
-
-window.addEventListener("load", function () {
-  cargarEstadoPIC();
-});
-
-function getEstadoFromDiff(diff) {
-  if (diff === 0) return "OK";
-  if (Math.abs(diff) <= 2) return "REVISAR";
-  return "ALERTA";
-}
-
-// --------- Cálculo del resumen ---------
-function calcularResumenEjecutivo() {
-  const resumen = {
-    OK:      { items: 0, diff: 0, valor: 0 },
-    REVISAR: { items: 0, diff: 0, valor: 0 },
-    ALERTA:  { items: 0, diff: 0, valor: 0 },
-  };
-
-  inventoryCajas.forEach((item) => {
-    if (!item) return;
-
-    if (item.fisicoCajas === null || item.fisicoCajas === "" || isNaN(item.fisicoCajas)) {
-      return;
-    }
-
-    const diff = calculateDiff(item.sistema, item.fisicoCajas);
-    const estado = getEstadoFromDiff(diff);
-    const grupo = resumen[estado];
-    if (!grupo) return;
-
-    const costo = item.costo || 0;
-
-    grupo.items += 1;
-    grupo.diff  += diff;
-    grupo.valor += -diff * costo;
-
-  });
-
-  return resumen;
-}
-
-// ---------- Pintar resumen en pantalla ----------
-function renderResumenEjecutivo() {
-  const cont = document.getElementById("resumenEjecutivo");
-  if (!cont) return;
-
-  const resumen = calcularResumenEjecutivo();
-
-  let html = `
-    <h3>Resumen ejecutivo</h3>
-    <table class="tabla-resumen">
-      <thead>
-        <tr>
-          <th>Estado</th>
-          <th>Productos</th>
-          <th>Diferencia total</th>
-          <th>Impacto ($)</th>
-        </tr>
-      </thead>
-      <tbody>
-  `;
-
-  const estados = ["OK", "REVISAR", "ALERTA"];
-  let totalImpacto = 0;
-
-  estados.forEach((estado) => {
-    const grupo = resumen[estado];
-    if (!grupo) return;
-
-    totalImpacto += grupo.valor;
-
-    html += `
-      <tr>
-        <td>${estado}</td>
-        <td>${grupo.items}</td>
-        <td>${grupo.diff}</td>
-        <td>${grupo.valor.toFixed(2)}</td>
-      </tr>
-    `;
-  });
-// ---------- Exportar resumen ejecutivo a Excel ----------
-function exportResumenEjecutivoExcel() {
-  try {
-    // Para comprobar que el botón sí dispara
-    alert("Generando archivo de resumen...");
-
-    const cont = document.getElementById("resumenEjecutivo");
-    if (!cont) {
-      alert("No hay contenedor de resumen ejecutivo.");
-      return;
-    }
-
-    const tabla = cont.querySelector("table");
-    if (!tabla) {
-      alert("El resumen está vacío (no hay tabla para exportar).");
-      return;
-    }
-
-    const filas = tabla.querySelectorAll("tbody tr");
-    if (!filas.length) {
-      alert("El resumen está vacío (no hay filas en la tabla).");
-      return;
-    }
-
-    const aoa = [];
-    aoa.push(["Estado", "Ítems", "Diferencia total", "Impacto ($)"]);
-
-    filas.forEach((tr) => {
-      const celdas = Array.from(tr.querySelectorAll("td")).map((td) =>
-        td.textContent.trim()
-      );
-      if (!celdas.length) return;
-      aoa.push(celdas);
-    });
-
-    const ws = XLSX.utils.aoa_to_sheet(aoa);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, "Resumen ejecutivo");
-
-    XLSX.writeFile(wb, "PIC_Resumen_Ejecutivo.xlsx");
-  } catch (err) {
-    console.error(err);
-    alert("Error exportando el resumen: " + err.message);
-  }
-}
-
-  // --- Fila TOTAL ---
-  const totalClass =
-    totalImpacto > 0 ? "total-ganancia" :
-    totalImpacto < 0 ? "total-perdida" :
-    "";
-
-  html += `
-      <tr class="fila-total">
-        <td>Total ganancia / pérdida</td>
-        <td></td>
-        <td></td>
-        <td class="${totalClass}">${totalImpacto.toFixed(2)}</td>
-      </tr>
-      </tbody>
-    </table>
-  `;
-
-  cont.innerHTML = html;
-}
-
-btnExportResumen.addEventListener("click", () => {
-  exportResumenEjecutivoExcel();
-});
-
-</script>
 </body>
 </html>
